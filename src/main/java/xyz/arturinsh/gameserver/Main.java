@@ -1,4 +1,4 @@
-package org.gradle;
+package xyz.arturinsh.gameserver;
 
 public class Main {
 	public static void main(String args[]) {

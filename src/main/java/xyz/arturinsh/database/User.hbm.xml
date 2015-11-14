@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="xyz.arturinsh.database.Users" table="Users">
+
+		<id name="Id" column="id">
+			<generator class="native" />
+		</id>
+
+		<property name="Username">
+			<column name="username" length="45" not-null="true" />
+		</property>
+
+		<property name="Password">
+			<column name="password" length="45" not-null="true" />
+		</property>
+
+	</class>
+</hibernate-mapping>

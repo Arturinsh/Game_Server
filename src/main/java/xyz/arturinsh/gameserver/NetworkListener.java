@@ -74,7 +74,7 @@ public class NetworkListener extends Listener {
 		List<User> users = query.list();
 
 		session.close();
-		if (users.size() > 0) {
+		if (userNameOk(login.userName) && pswOk(login.password) && users.size() > 0) {
 			if (users.get(0).getPassword().matches(login.password)) {
 				Player temp = new Player();
 				temp.username = login.userName;
@@ -110,16 +110,16 @@ public class NetworkListener extends Listener {
 		Query query = session.createQuery("FROM User WHERE username =:name");
 		query.setParameter("name", newUser.userName);
 		List<User> users = query.list();
-		if (users.size() < 1) {
+		if (userNameOk(newUser.userName) && pswOk(newUser.password) && users.size() < 1) {
 			User test = new User();
-			//TODO generate hash, check password and username regex
+			// TODO generate hash, check password and username regex
 			test.setPassword(newUser.password);
 			test.setUsername(newUser.userName);
 
 			session.beginTransaction();
 
 			session.save(test);
-			
+
 			session.getTransaction().commit();
 			playerConnection.sendTCP(new RegisterSuccess());
 		} else {
@@ -127,5 +127,17 @@ public class NetworkListener extends Listener {
 			playerConnection.sendTCP(fail);
 		}
 		session.close();
+	}
+
+	private boolean userNameOk(String username) {
+		if (username.length() >= 6 && username.length() <= 32 && username.matches("[a-zA-Z0-9]*"))
+			return true;
+		return false;
+	}
+
+	private boolean pswOk(String psw) {
+		if (psw.length() >= 6 && psw.length() <= 32 && psw.matches("[a-zA-Z0-9_.@]*"))
+			return true;
+		return false;
 	}
 }

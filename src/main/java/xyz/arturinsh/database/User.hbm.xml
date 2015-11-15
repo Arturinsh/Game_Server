@@ -12,11 +12,11 @@
 		</id>
 
 		<property name="Username">
-			<column name="username" length="45" not-null="true" />
+			<column name="username" length="32" not-null="true" />
 		</property>
 
 		<property name="Password">
-			<column name="password" length="45" not-null="true" />
+			<column name="password" length="32" not-null="true" />
 		</property>
 
 	</class>

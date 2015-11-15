@@ -14,10 +14,13 @@ import xyz.arturinsh.database.User;
 import xyz.arturinsh.gameObjects.Player;
 import xyz.arturinsh.gameserver.Main.PlayerConnection;
 import xyz.arturinsh.helpers.SessionFactoryUtil;
+import xyz.arturinsh.packets.Packets.AddPlayer;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.LogInFailed;
 import xyz.arturinsh.packets.Packets.LogInSuccess;
 import xyz.arturinsh.packets.Packets.Register;
+import xyz.arturinsh.packets.Packets.RegisterFailed;
+import xyz.arturinsh.packets.Packets.RegisterSuccess;
 
 public class NetworkListener extends Listener {
 	private Server server;
@@ -43,16 +46,23 @@ public class NetworkListener extends Listener {
 		}
 
 		if (object instanceof Register) {
-			Register temp = (Register) object;
-			System.out.println(temp.userName);
-			System.out.println(temp.password);
+			registerUser(playerConnection, (Register) object);
 		}
 	}
 
 	private void logIn(PlayerConnection playerConnection, LogIn login) {
 		if (canLogIn(playerConnection, login)) {
 			Player nplayer = new Player();
+			nplayer.username = login.userName;
+			playerConnection.player = nplayer;
 			playerConnection.sendTCP(new LogInSuccess());
+
+			AddPlayer addplayer = new AddPlayer();
+			// TODO send all player list, add new packet with list
+			addplayer.username = login.userName;
+
+			server.sendToAllTCP(addplayer);
+			System.out.println(nplayer.username + " logged into server.");
 		}
 	}
 
@@ -93,5 +103,29 @@ public class NetworkListener extends Listener {
 				return true;
 		}
 		return false;
+	}
+
+	private void registerUser(PlayerConnection playerConnection, Register newUser) {
+		Session session = SessionFactoryUtil.getSessionFactory().openSession();
+		Query query = session.createQuery("FROM User WHERE username =:name");
+		query.setParameter("name", newUser.userName);
+		List<User> users = query.list();
+		if (users.size() < 1) {
+			User test = new User();
+			//TODO generate hash, check password and username regex
+			test.setPassword(newUser.password);
+			test.setUsername(newUser.userName);
+
+			session.beginTransaction();
+
+			session.save(test);
+			
+			session.getTransaction().commit();
+			playerConnection.sendTCP(new RegisterSuccess());
+		} else {
+			RegisterFailed fail = new RegisterFailed();
+			playerConnection.sendTCP(fail);
+		}
+		session.close();
 	}
 }

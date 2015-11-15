@@ -6,49 +6,63 @@ import java.util.logging.Logger;
 
 import org.hibernate.Session;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
 import xyz.arturinsh.database.User;
+import xyz.arturinsh.gameObjects.Player;
 import xyz.arturinsh.helpers.SessionFactoryUtil;
+import xyz.arturinsh.packets.Packets.AddPlayer;
+import xyz.arturinsh.packets.Packets.LogIn;
+import xyz.arturinsh.packets.Packets.LogInFailed;
+import xyz.arturinsh.packets.Packets.LogInSuccess;
+import xyz.arturinsh.packets.Packets.Register;
+import xyz.arturinsh.packets.Packets.RegisterFailed;
+import xyz.arturinsh.packets.Packets.RegisterSuccess;
+import xyz.arturinsh.packets.Packets.RemovePlayer;
 
 public class Main {
+	private static Server server;
+
 	public static void main(String args[]) {
 		System.out.println("Server started");
-		setLoggersToLogWarining();
-		testHibernate();
-		System.out.println("The end");
-	}
-
-	private static void testKryo() {
-		Server server = new Server();
+		setLoggersToLogWarning();
+		server = new Server(){
+			protected Connection newConnection(){
+				return new PlayerConnection();
+			}
+		};
+		registerKryo();
+		server.addListener(new NetworkListener(server));
 		server.start();
 		try {
 			server.bind(54555, 54777);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.print(e);
 		}
 	}
 
-	private static void setLoggersToLogWarining() {
+	private static void registerKryo() {
+		Kryo kryo = server.getKryo();
+		kryo.register(LogIn.class);
+		kryo.register(Register.class);
+		kryo.register(LogInSuccess.class);
+		kryo.register(RegisterSuccess.class);
+		kryo.register(LogInFailed.class);
+		kryo.register(RegisterFailed.class);
+		kryo.register(AddPlayer.class);
+		kryo.register(RemovePlayer.class);
+	}
+
+	private static void setLoggersToLogWarning() {
 		Logger log = Logger.getLogger("org.hibernate");
 		log.setLevel(Level.WARNING);
 		System.setProperty("com.mchange.v2.log.FallbackMLog.DEFAULT_CUTOFF_LEVEL", "WARNING");
 		System.setProperty("com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
 	}
-
-	private static void testHibernate() {
-		Session session = SessionFactoryUtil.getSessionFactory().openSession();
-		User test = new User();
-		test.setPassword("testdsdf");
-		test.setUsername("kaka");
-
-		session.beginTransaction();
-
-		session.save(test);
-
-		session.getTransaction().commit();
-		session.close();
+	
+	static class PlayerConnection extends Connection{
+		public Player player;
 	}
-
 }

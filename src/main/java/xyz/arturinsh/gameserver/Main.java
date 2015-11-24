@@ -10,8 +10,12 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
-import xyz.arturinsh.gameObjects.Player;
+import xyz.arturinsh.database.User;
+import xyz.arturinsh.gameObjects.CharacterClass;
 import xyz.arturinsh.packets.Packets.AddPlayer;
+import xyz.arturinsh.packets.Packets.CharacterCreateFailed;
+import xyz.arturinsh.packets.Packets.CharacterCreateSuccess;
+import xyz.arturinsh.packets.Packets.CreateCharacter;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.LogInFailed;
 import xyz.arturinsh.packets.Packets.LogInSuccess;
@@ -51,6 +55,10 @@ public class Main {
 		kryo.register(RegisterFailed.class);
 		kryo.register(AddPlayer.class);
 		kryo.register(RemovePlayer.class);
+		kryo.register(CharacterClass.class);
+		kryo.register(CreateCharacter.class);
+		kryo.register(CharacterCreateSuccess.class);
+		kryo.register(CharacterCreateFailed.class);
 	}
 
 	private static void setLoggersToLogWarning() {
@@ -62,7 +70,7 @@ public class Main {
 
 	static class PlayerConnection extends Connection {
 		
-		public Player player;
+		public User user;
 		private ExecutorService tasks = Executors.newSingleThreadExecutor();
 		
 		public void addTask(Runnable newTask) {

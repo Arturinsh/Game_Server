@@ -1,5 +1,7 @@
 package xyz.arturinsh.packets;
 
+import xyz.arturinsh.gameObjects.CharacterClass;
+
 public class Packets {
 	public static class LogIn {
 		public String userName;
@@ -29,5 +31,17 @@ public class Packets {
 
 	public static class RemovePlayer {
 		public String username;
+	}
+
+	public static class CreateCharacter {
+		public String charName;
+		public CharacterClass charClass;
+	}
+
+	public static class CharacterCreateSuccess {
+
+	}
+
+	public static class CharacterCreateFailed {
 	}
 }

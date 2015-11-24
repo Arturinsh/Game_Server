@@ -26,7 +26,7 @@ public class User {
 	private String Password;
 
 	@OneToMany(mappedBy="User")
-	private Set<Character> Characters;
+	private Set<GameCharacter> Characters;
 	
 	public long getId() {
 		return Id;
@@ -52,11 +52,11 @@ public class User {
 		Password = password;
 	}
 
-	public Set<Character> getCharacters() {
+	public Set<GameCharacter> getCharacters() {
 		return Characters;
 	}
 
-	public void setCharacters(Set<Character> characters) {
+	public void setCharacters(Set<GameCharacter> characters) {
 		Characters = characters;
 	}
 }

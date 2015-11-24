@@ -9,21 +9,26 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import xyz.arturinsh.gameObjects.CharacterClass;
+
 @Entity
 @Table(name = "Characters")
-public class Character {
+public class GameCharacter {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="CharId")
+	@Column(name = "CharId")
 	private long Id;
-	
-	@Column(name="CharName")
+
+	@Column(name = "CharName")
 	private String CharacterName;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "UserId")
 	private User User;
+
+	@Column(name = "Class")
+	private CharacterClass charClass;
 
 	public long getId() {
 		return Id;
@@ -47,6 +52,14 @@ public class Character {
 
 	public void setUser(User user) {
 		User = user;
+	}
+
+	public CharacterClass getCharClass() {
+		return charClass;
+	}
+
+	public void setCharClass(CharacterClass charClass) {
+		this.charClass = charClass;
 	}
 
 }

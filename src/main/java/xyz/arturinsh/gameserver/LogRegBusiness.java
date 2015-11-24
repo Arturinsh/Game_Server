@@ -8,8 +8,9 @@ import org.hibernate.Session;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
-import xyz.arturinsh.database.Character;
+import xyz.arturinsh.database.GameCharacter;
 import xyz.arturinsh.database.User;
+import xyz.arturinsh.gameObjects.CharacterClass;
 import xyz.arturinsh.gameObjects.Player;
 import xyz.arturinsh.gameserver.Main.PlayerConnection;
 import xyz.arturinsh.helpers.SessionFactoryUtil;
@@ -23,29 +24,29 @@ import xyz.arturinsh.packets.Packets.RegisterSuccess;
 
 public class LogRegBusiness {
 	private Server server;
-	private List<Player> loggedIn;
-	public LogRegBusiness(Server _server, List<Player> _loggedIn){
+	private List<User> loggedIn;
+
+	public LogRegBusiness(Server _server, List<User> _loggedIn) {
 		server = _server;
 		loggedIn = _loggedIn;
 	}
-	
+
 	public void logIn(PlayerConnection playerConnection, LogIn login) {
-		if (canLogIn(playerConnection, login)) {
-			Player nplayer = new Player();
-			nplayer.username = login.userName;
-			playerConnection.player = nplayer;
+		User user = canLogIn(playerConnection, login);
+		if (user != null) {
+			playerConnection.user = user;
 			playerConnection.sendTCP(new LogInSuccess());
 
 			AddPlayer addplayer = new AddPlayer();
 			// TODO send all player list, add new packet with list
 			addplayer.username = login.userName;
 
-			//server.sendToAllTCP(addplayer);
-			System.out.println(nplayer.username + " logged into server.");
+			// server.sendToAllTCP(addplayer);
+			System.out.println(user.getUsername() + " logged into server.");
 		}
 	}
 
-	private boolean canLogIn(PlayerConnection playerConnection, LogIn login) {
+	private User canLogIn(PlayerConnection playerConnection, LogIn login) {
 		Session session = SessionFactoryUtil.getSessionFactory().openSession();
 		Query query = session.createQuery("FROM User WHERE username =:name");
 		query.setParameter("name", login.userName);
@@ -61,29 +62,29 @@ public class LogRegBusiness {
 					Connection[] conList = server.getConnections();
 					for (Connection con : conList) {
 						PlayerConnection test = (PlayerConnection) con;
-						if (test.player != null) {
-							if (test.player.username.matches(login.userName)) {
+						if (test.user != null) {
+							if (test.user.getUsername().matches(login.userName)) {
 								con.close();
 							}
 						}
 					}
 				}
-				return true;
+				return users.get(0);
 			}
 		}
 		LogInFailed fail = new LogInFailed();
 		playerConnection.sendTCP(fail);
-		return false;
+		return null;
 	}
 
 	private boolean isInLoggedIn(LogIn login) {
-		for (Player player : loggedIn) {
-			if (player.username.matches(login.userName))
+		for (User player : loggedIn) {
+			if (player.getUsername().matches(login.userName))
 				return true;
 		}
 		return false;
 	}
-	
+
 	public void registerUser(PlayerConnection playerConnection, Register newUser) {
 		Session session = SessionFactoryUtil.getSessionFactory().openSession();
 		Query query = session.createQuery("FROM User WHERE username =:name");
@@ -94,14 +95,9 @@ public class LogRegBusiness {
 			// TODO generate hash, check password and username regex
 			test.setPassword(newUser.password);
 			test.setUsername(newUser.userName);
-//			Character ch = new Character();
-//			ch.setUser(test);
-//			ch.setCharacterName("Character");
-			
 			session.beginTransaction();
-			
+
 			session.save(test);
-//			session.save(ch);
 			session.getTransaction().commit();
 			playerConnection.sendTCP(new RegisterSuccess());
 		} else {

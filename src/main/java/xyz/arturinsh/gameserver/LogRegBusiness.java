@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
+import xyz.arturinsh.database.Character;
 import xyz.arturinsh.database.User;
 import xyz.arturinsh.gameObjects.Player;
 import xyz.arturinsh.gameserver.Main.PlayerConnection;
@@ -39,7 +40,7 @@ public class LogRegBusiness {
 			// TODO send all player list, add new packet with list
 			addplayer.username = login.userName;
 
-			server.sendToAllTCP(addplayer);
+			//server.sendToAllTCP(addplayer);
 			System.out.println(nplayer.username + " logged into server.");
 		}
 	}
@@ -93,11 +94,14 @@ public class LogRegBusiness {
 			// TODO generate hash, check password and username regex
 			test.setPassword(newUser.password);
 			test.setUsername(newUser.userName);
-
+//			Character ch = new Character();
+//			ch.setUser(test);
+//			ch.setCharacterName("Character");
+			
 			session.beginTransaction();
-
+			
 			session.save(test);
-
+//			session.save(ch);
 			session.getTransaction().commit();
 			playerConnection.sendTCP(new RegisterSuccess());
 		} else {

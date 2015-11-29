@@ -1,5 +1,6 @@
 package xyz.arturinsh.gameserver;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -10,8 +11,6 @@ import com.esotericsoftware.kryonet.Server;
 
 import xyz.arturinsh.database.GameCharacter;
 import xyz.arturinsh.database.User;
-import xyz.arturinsh.gameObjects.CharacterClass;
-import xyz.arturinsh.gameObjects.Player;
 import xyz.arturinsh.gameserver.Main.PlayerConnection;
 import xyz.arturinsh.helpers.SessionFactoryUtil;
 import xyz.arturinsh.packets.Packets.AddPlayer;
@@ -21,6 +20,7 @@ import xyz.arturinsh.packets.Packets.LogInSuccess;
 import xyz.arturinsh.packets.Packets.Register;
 import xyz.arturinsh.packets.Packets.RegisterFailed;
 import xyz.arturinsh.packets.Packets.RegisterSuccess;
+import xyz.arturinsh.packets.Packets.UserCharacter;
 
 public class LogRegBusiness {
 	private Server server;
@@ -35,7 +35,9 @@ public class LogRegBusiness {
 		User user = canLogIn(playerConnection, login);
 		if (user != null) {
 			playerConnection.user = user;
-			playerConnection.sendTCP(new LogInSuccess());
+			LogInSuccess loginSces = new LogInSuccess();
+			loginSces.characters = convertChars(user);
+			playerConnection.sendTCP(loginSces);
 
 			AddPlayer addplayer = new AddPlayer();
 			// TODO send all player list, add new packet with list
@@ -56,8 +58,6 @@ public class LogRegBusiness {
 		session.close();
 		if (userNameOk(login.userName) && pswOk(login.password) && users.size() > 0) {
 			if (users.get(0).getPassword().matches(login.password)) {
-				Player temp = new Player();
-				temp.username = login.userName;
 				if (isInLoggedIn(login)) {
 					Connection[] conList = server.getConnections();
 					for (Connection con : conList) {
@@ -69,7 +69,10 @@ public class LogRegBusiness {
 						}
 					}
 				}
-				return users.get(0);
+				User loginUser = users.get(0);
+				loginUser.getCharacters().size();
+				
+				return loginUser;
 			}
 		}
 		LogInFailed fail = new LogInFailed();
@@ -117,5 +120,17 @@ public class LogRegBusiness {
 		if (psw.length() >= 6 && psw.length() <= 32 && psw.matches("[a-zA-Z0-9_.@]*"))
 			return true;
 		return false;
+	}
+
+	private List<UserCharacter> convertChars(User user) {
+		List<UserCharacter> characters = new ArrayList<UserCharacter>();
+		
+		for (GameCharacter usrChar : user.getCharacters()) {
+			UserCharacter newChar = new UserCharacter();
+			newChar.charName = usrChar.getCharacterName();
+			newChar.charClass = usrChar.getCharClass();
+			characters.add(newChar);
+		}
+		return characters;
 	}
 }

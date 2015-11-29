@@ -1,5 +1,7 @@
 package xyz.arturinsh.packets;
 
+import java.util.List;
+
 import xyz.arturinsh.gameObjects.CharacterClass;
 
 public class Packets {
@@ -14,6 +16,7 @@ public class Packets {
 	}
 
 	public static class LogInSuccess {
+		public List<UserCharacter> characters;
 	}
 
 	public static class RegisterSuccess {
@@ -33,7 +36,7 @@ public class Packets {
 		public String username;
 	}
 
-	public static class CreateCharacter {
+	public static class UserCharacter {
 		public String charName;
 		public CharacterClass charClass;
 	}

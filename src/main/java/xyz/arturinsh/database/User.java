@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,18 +17,18 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="UserId")
+	@Column(name = "UserId")
 	private long Id;
-	
-	@Column(name="Username")
+
+	@Column(name = "Username")
 	private String Username;
-	
-	@Column(name="Password")
+
+	@Column(name = "Password")
 	private String Password;
 
-	@OneToMany(mappedBy="User")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "User")
 	private Set<GameCharacter> Characters;
-	
+
 	public long getId() {
 		return Id;
 	}

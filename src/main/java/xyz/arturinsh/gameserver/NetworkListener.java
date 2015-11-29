@@ -10,7 +10,7 @@ import com.esotericsoftware.kryonet.Server;
 import xyz.arturinsh.database.User;
 import xyz.arturinsh.gameObjects.Player;
 import xyz.arturinsh.gameserver.Main.PlayerConnection;
-import xyz.arturinsh.packets.Packets.CreateCharacter;
+import xyz.arturinsh.packets.Packets.UserCharacter;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.Register;
 
@@ -43,8 +43,8 @@ public class NetworkListener extends Listener {
 				if (object instanceof Register) {
 					new LogRegBusiness(server, loggedIn).registerUser(playerConnection, (Register) object);
 				}
-				if (object instanceof CreateCharacter) {
-					new CharacterCreateBusiness(server).createCharacter(playerConnection, (CreateCharacter) object);
+				if (object instanceof UserCharacter) {
+					new CharacterCreateBusiness(server).createCharacter(playerConnection, (UserCharacter) object);
 				}
 			}
 		});

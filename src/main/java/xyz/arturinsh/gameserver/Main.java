@@ -15,7 +15,7 @@ import xyz.arturinsh.gameObjects.CharacterClass;
 import xyz.arturinsh.packets.Packets.AddPlayer;
 import xyz.arturinsh.packets.Packets.CharacterCreateFailed;
 import xyz.arturinsh.packets.Packets.CharacterCreateSuccess;
-import xyz.arturinsh.packets.Packets.CreateCharacter;
+import xyz.arturinsh.packets.Packets.UserCharacter;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.LogInFailed;
 import xyz.arturinsh.packets.Packets.LogInSuccess;
@@ -47,6 +47,7 @@ public class Main {
 
 	private static void registerKryo() {
 		Kryo kryo = server.getKryo();
+		kryo.register(java.util.ArrayList.class);
 		kryo.register(LogIn.class);
 		kryo.register(Register.class);
 		kryo.register(LogInSuccess.class);
@@ -56,7 +57,7 @@ public class Main {
 		kryo.register(AddPlayer.class);
 		kryo.register(RemovePlayer.class);
 		kryo.register(CharacterClass.class);
-		kryo.register(CreateCharacter.class);
+		kryo.register(UserCharacter.class);
 		kryo.register(CharacterCreateSuccess.class);
 		kryo.register(CharacterCreateFailed.class);
 	}

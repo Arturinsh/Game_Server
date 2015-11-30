@@ -46,5 +46,6 @@ public class Packets {
 	}
 
 	public static class CharacterCreateFailed {
+		
 	}
 }

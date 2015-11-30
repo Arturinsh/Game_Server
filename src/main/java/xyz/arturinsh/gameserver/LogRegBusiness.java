@@ -111,13 +111,13 @@ public class LogRegBusiness {
 	}
 
 	private boolean userNameOk(String username) {
-		if (username.length() >= 6 && username.length() <= 32 && username.matches("[a-zA-Z0-9]*"))
+		if (username.length() >= 5 && username.length() <= 32 && username.matches("[a-zA-Z0-9]*"))
 			return true;
 		return false;
 	}
 
 	private boolean pswOk(String psw) {
-		if (psw.length() >= 6 && psw.length() <= 32 && psw.matches("[a-zA-Z0-9_.@]*"))
+		if (psw.length() >= 5 && psw.length() <= 32 && psw.matches("[a-zA-Z0-9_.@]*"))
 			return true;
 		return false;
 	}

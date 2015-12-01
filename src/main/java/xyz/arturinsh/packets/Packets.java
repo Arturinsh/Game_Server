@@ -42,7 +42,7 @@ public class Packets {
 	}
 
 	public static class CharacterCreateSuccess {
-
+		public List<UserCharacter> characters;
 	}
 
 	public static class CharacterCreateFailed {

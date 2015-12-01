@@ -122,6 +122,7 @@ public class LogRegBusiness {
 		return false;
 	}
 
+	//TODO dublicate of method
 	private List<UserCharacter> convertChars(User user) {
 		List<UserCharacter> characters = new ArrayList<UserCharacter>();
 		

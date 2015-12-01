@@ -1,5 +1,6 @@
 package xyz.arturinsh.gameserver;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -40,9 +41,31 @@ public class CharacterCreateBusiness {
 			session.beginTransaction();
 			session.save(ch);
 			session.getTransaction().commit();
-			playerConnection.sendTCP(new CharacterCreateSuccess());
-		} else
+			
+			Query usrQuery = session.createQuery("FROM User WHERE username =:name");
+			usrQuery.setParameter("name", user.getUsername());
+			
+			User updatedUser = (User) usrQuery.list().get(0);
+			playerConnection.user = updatedUser;
+			
+			CharacterCreateSuccess success = new CharacterCreateSuccess();
+			success.characters = convertChars(updatedUser);
+			playerConnection.sendTCP(success);
+		} else {
 			playerConnection.sendTCP(new CharacterCreateFailed());
-
+		}
+	}
+	
+	//TODO dublicate of method
+	private List<UserCharacter> convertChars(User user) {
+		List<UserCharacter> characters = new ArrayList<UserCharacter>();
+		
+		for (GameCharacter usrChar : user.getCharacters()) {
+			UserCharacter newChar = new UserCharacter();
+			newChar.charName = usrChar.getCharacterName();
+			newChar.charClass = usrChar.getCharClass();
+			characters.add(newChar);
+		}
+		return characters;
 	}
 }

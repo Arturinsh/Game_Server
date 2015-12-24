@@ -8,11 +8,11 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import xyz.arturinsh.database.User;
-import xyz.arturinsh.gameObjects.Player;
 import xyz.arturinsh.gameserver.Main.PlayerConnection;
-import xyz.arturinsh.packets.Packets.UserCharacter;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.Register;
+import xyz.arturinsh.packets.Packets.TestUDP;
+import xyz.arturinsh.packets.Packets.UserCharacter;
 
 public class NetworkListener extends Listener {
 	private Server server;
@@ -45,6 +45,13 @@ public class NetworkListener extends Listener {
 				}
 				if (object instanceof UserCharacter) {
 					new CharacterCreateBusiness(server).createCharacter(playerConnection, (UserCharacter) object);
+				}
+				if (object instanceof TestUDP) {
+					TestUDP test = (TestUDP) object;
+					System.out.println(test.text);
+					TestUDP test2 = new TestUDP();
+					test2.text = test.text;
+					playerConnection.sendUDP(test2);
 				}
 			}
 		});

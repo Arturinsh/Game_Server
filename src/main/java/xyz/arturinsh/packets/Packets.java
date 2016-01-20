@@ -29,10 +29,9 @@ public class Packets {
 	}
 
 	public static class AddPlayer {
-		public String username;
-		public float x,y,z;
-		public CharacterClass charClass;
-		//TODO add rotation// change to another class
+		public UserCharacter character;
+		public float x, y, z;
+		// TODO add rotation// change to another class
 	}
 
 	public static class RemovePlayer {
@@ -49,14 +48,23 @@ public class Packets {
 	}
 
 	public static class CharacterCreateFailed {
-		
+
 	}
-	
+
 	public static class TestUDP {
 		public String text;
 	}
-	
-	public static class EnterWorld{
-		
+
+	public static class EnterWorld {
+		public UserCharacter character;
+	}
+
+	public static class PositionUpdate {
+		public UserCharacter character;
+		public float x, y, z;
+	}
+
+	public static class PlayersSnapShot {
+		public List<PositionUpdate> snapshot;
 	}
 }

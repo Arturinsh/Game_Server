@@ -49,7 +49,7 @@ public class Main {
 			System.out.print(e);
 		}
 		Timer timer = new Timer();
-		timer.schedule(new GameUpdate(server), 0, 2000);
+		timer.schedule(new GameUpdate(server), 0, 50);
 	}
 
 	private static void registerKryo() {
@@ -84,7 +84,7 @@ public class Main {
 
 		public User user;
 		public UserCharacter character;
-		public float x, y, z;
+		public float x, y, z, qx, qy, qz, qw;
 		private ExecutorService tasks = Executors.newSingleThreadExecutor();
 
 		public void addTask(Runnable newTask) {

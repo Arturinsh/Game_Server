@@ -82,6 +82,10 @@ public class NetworkListener extends Listener {
 						playerConnection.x = update.x;
 						playerConnection.y = update.y;
 						playerConnection.z = update.z;
+						playerConnection.qx = update.qx;
+						playerConnection.qy = update.qy;
+						playerConnection.qz = update.qz;
+						playerConnection.qw = update.qw;
 					}
 				}
 			}

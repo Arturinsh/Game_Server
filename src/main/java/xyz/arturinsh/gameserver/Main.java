@@ -1,6 +1,7 @@
 package xyz.arturinsh.gameserver;
 
 import java.io.IOException;
+import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -15,6 +16,7 @@ import xyz.arturinsh.gameObjects.CharacterClass;
 import xyz.arturinsh.packets.Packets.AddPlayer;
 import xyz.arturinsh.packets.Packets.CharacterCreateFailed;
 import xyz.arturinsh.packets.Packets.CharacterCreateSuccess;
+import xyz.arturinsh.packets.Packets.EnterWorld;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.LogInFailed;
 import xyz.arturinsh.packets.Packets.LogInSuccess;
@@ -44,6 +46,8 @@ public class Main {
 		} catch (IOException e) {
 			System.out.print(e);
 		}
+		Timer timer = new Timer();
+		timer.schedule(new GameUpdate(server), 0, 1000);
 	}
 
 	private static void registerKryo() {
@@ -62,6 +66,7 @@ public class Main {
 		kryo.register(CharacterCreateSuccess.class);
 		kryo.register(CharacterCreateFailed.class);
 		kryo.register(TestUDP.class);
+		kryo.register(EnterWorld.class);
 	}
 
 	private static void setLoggersToLogWarning() {
@@ -72,10 +77,12 @@ public class Main {
 	}
 
 	static class PlayerConnection extends Connection {
-		
+
 		public User user;
+		public float x,y,z;
+		public CharacterClass charClass;
 		private ExecutorService tasks = Executors.newSingleThreadExecutor();
-		
+
 		public void addTask(Runnable newTask) {
 			tasks.execute(newTask);
 		}

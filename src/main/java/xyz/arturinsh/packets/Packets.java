@@ -30,6 +30,9 @@ public class Packets {
 
 	public static class AddPlayer {
 		public String username;
+		public float x,y,z;
+		public CharacterClass charClass;
+		//TODO add rotation// change to another class
 	}
 
 	public static class RemovePlayer {
@@ -51,5 +54,9 @@ public class Packets {
 	
 	public static class TestUDP {
 		public String text;
+	}
+	
+	public static class EnterWorld{
+		
 	}
 }

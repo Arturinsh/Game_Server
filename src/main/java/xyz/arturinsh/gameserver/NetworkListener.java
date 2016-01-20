@@ -8,7 +8,10 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import xyz.arturinsh.database.User;
+import xyz.arturinsh.gameObjects.CharacterClass;
 import xyz.arturinsh.gameserver.Main.PlayerConnection;
+import xyz.arturinsh.packets.Packets.AddPlayer;
+import xyz.arturinsh.packets.Packets.EnterWorld;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.Register;
 import xyz.arturinsh.packets.Packets.TestUDP;
@@ -24,6 +27,7 @@ public class NetworkListener extends Listener {
 
 	@Override
 	public void connected(Connection connection) {
+
 	}
 
 	@Override
@@ -47,13 +51,31 @@ public class NetworkListener extends Listener {
 					new CharacterCreateBusiness(server).createCharacter(playerConnection, (UserCharacter) object);
 				}
 				if (object instanceof TestUDP) {
-					TestUDP test = (TestUDP) object;
-					System.out.println(test.text);
-					TestUDP test2 = new TestUDP();
-					test2.text = test.text;
-					playerConnection.sendUDP(test2);
+					 TestUDP test = (TestUDP) object;
+					 System.out.println(test.text+" "+playerConnection.getRemoteAddressUDP());
+					// TestUDP test2 = new TestUDP();
+					// test2.text = test.text;
+					// playerConnection.sendUDP(test2);
+				}
+				if (object instanceof EnterWorld) {
+					AddPlayer ply = new AddPlayer();
+					ply.charClass = CharacterClass.GREEN;
+					ply.username = "IDK";
+					ply.x = 0;
+					ply.y = 0;
+					ply.z = 0;
+					sendToAllExceptHim(ply, connection);
+					System.out.println("enterWorld");
 				}
 			}
 		});
+	}
+
+	private void sendToAllExceptHim(Object object, Connection connection) {
+		for (Connection con : server.getConnections()) {
+			if (con != connection)
+				con.sendTCP(object);
+		}
+
 	}
 }

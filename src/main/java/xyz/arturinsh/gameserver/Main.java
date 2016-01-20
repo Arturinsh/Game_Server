@@ -20,6 +20,8 @@ import xyz.arturinsh.packets.Packets.EnterWorld;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.LogInFailed;
 import xyz.arturinsh.packets.Packets.LogInSuccess;
+import xyz.arturinsh.packets.Packets.PlayersSnapShot;
+import xyz.arturinsh.packets.Packets.PositionUpdate;
 import xyz.arturinsh.packets.Packets.Register;
 import xyz.arturinsh.packets.Packets.RegisterFailed;
 import xyz.arturinsh.packets.Packets.RegisterSuccess;
@@ -47,7 +49,7 @@ public class Main {
 			System.out.print(e);
 		}
 		Timer timer = new Timer();
-		timer.schedule(new GameUpdate(server), 0, 1000);
+		timer.schedule(new GameUpdate(server), 0, 2000);
 	}
 
 	private static void registerKryo() {
@@ -67,6 +69,8 @@ public class Main {
 		kryo.register(CharacterCreateFailed.class);
 		kryo.register(TestUDP.class);
 		kryo.register(EnterWorld.class);
+		kryo.register(PositionUpdate.class);
+		kryo.register(PlayersSnapShot.class);
 	}
 
 	private static void setLoggersToLogWarning() {
@@ -79,8 +83,8 @@ public class Main {
 	static class PlayerConnection extends Connection {
 
 		public User user;
-		public float x,y,z;
-		public CharacterClass charClass;
+		public UserCharacter character;
+		public float x, y, z;
 		private ExecutorService tasks = Executors.newSingleThreadExecutor();
 
 		public void addTask(Runnable newTask) {

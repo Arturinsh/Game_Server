@@ -39,11 +39,6 @@ public class LogRegBusiness {
 			loginSces.characters = convertChars(user);
 			playerConnection.sendTCP(loginSces);
 
-			AddPlayer addplayer = new AddPlayer();
-			// TODO send all player list, add new packet with list
-			addplayer.username = login.userName;
-
-			// server.sendToAllTCP(addplayer);
 			System.out.println(user.getUsername() + " logged into server.");
 		}
 	}

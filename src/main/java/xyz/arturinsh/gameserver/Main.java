@@ -84,7 +84,7 @@ public class Main {
 
 		public User user;
 		public UserCharacter character;
-		public float x, y, z, qx, qy, qz, qw;
+		public float x, y, z, r;
 		private ExecutorService tasks = Executors.newSingleThreadExecutor();
 
 		public void addTask(Runnable newTask) {

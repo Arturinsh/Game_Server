@@ -45,10 +45,7 @@ public class GameUpdate extends TimerTask {
 			update.x = player.x;
 			update.y = player.y;
 			update.z = player.z;
-			update.qx = player.qx;
-			update.qy = player.qy;
-			update.qz = player.qz;
-			update.qw = player.qw;
+			update.r = player.r;
 			snapShot.snapshot.add(update);
 		}
 		//server.sendToAllUDP(snapShot);

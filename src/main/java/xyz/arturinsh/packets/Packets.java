@@ -36,7 +36,7 @@ public class Packets {
 	}
 
 	public static class RemovePlayer {
-		public String username;
+		public UserCharacter character;
 	}
 
 	public static class UserCharacter {

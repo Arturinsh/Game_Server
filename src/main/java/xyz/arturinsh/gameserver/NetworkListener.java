@@ -8,13 +8,13 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import xyz.arturinsh.database.User;
-import xyz.arturinsh.gameObjects.CharacterClass;
 import xyz.arturinsh.gameserver.Main.PlayerConnection;
 import xyz.arturinsh.packets.Packets.AddPlayer;
 import xyz.arturinsh.packets.Packets.EnterWorld;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.PositionUpdate;
 import xyz.arturinsh.packets.Packets.Register;
+import xyz.arturinsh.packets.Packets.RemovePlayer;
 import xyz.arturinsh.packets.Packets.TestUDP;
 import xyz.arturinsh.packets.Packets.UserCharacter;
 
@@ -33,6 +33,13 @@ public class NetworkListener extends Listener {
 
 	@Override
 	public void disconnected(Connection connection) {
+		PlayerConnection player = (PlayerConnection) connection;
+
+		if (player.character != null) {
+			RemovePlayer rmv = new RemovePlayer();
+			rmv.character = player.character;
+			server.sendToAllTCP(rmv);
+		}
 
 	}
 

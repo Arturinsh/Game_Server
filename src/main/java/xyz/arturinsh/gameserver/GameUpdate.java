@@ -1,6 +1,7 @@
 package xyz.arturinsh.gameserver;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.TimerTask;
 
@@ -49,7 +50,7 @@ public class GameUpdate extends TimerTask {
 			snapShot.snapshot.add(update);
 		}
 		//server.sendToAllUDP(snapShot);
-		
+		snapShot.time = new Date();
 		for(PlayerConnection player : characters){
 			player.sendUDP(snapShot);
 		}

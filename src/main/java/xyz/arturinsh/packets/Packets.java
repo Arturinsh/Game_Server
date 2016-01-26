@@ -1,5 +1,6 @@
 package xyz.arturinsh.packets;
 
+import java.util.Date;
 import java.util.List;
 
 import xyz.arturinsh.gameObjects.CharacterClass;
@@ -66,5 +67,6 @@ public class Packets {
 
 	public static class PlayersSnapShot {
 		public List<PositionUpdate> snapshot;
+		public Date time;
 	}
 }

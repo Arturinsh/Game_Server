@@ -55,6 +55,7 @@ public class Main {
 	private static void registerKryo() {
 		Kryo kryo = server.getKryo();
 		kryo.register(java.util.ArrayList.class);
+		kryo.register(java.util.Date.class);
 		kryo.register(LogIn.class);
 		kryo.register(Register.class);
 		kryo.register(LogInSuccess.class);

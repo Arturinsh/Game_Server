@@ -12,7 +12,7 @@ import xyz.arturinsh.gameserver.Main.PlayerConnection;
 import xyz.arturinsh.packets.Packets.AddPlayer;
 import xyz.arturinsh.packets.Packets.EnterWorld;
 import xyz.arturinsh.packets.Packets.LogIn;
-import xyz.arturinsh.packets.Packets.PositionUpdate;
+import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
 import xyz.arturinsh.packets.Packets.Register;
 import xyz.arturinsh.packets.Packets.RemovePlayer;
 import xyz.arturinsh.packets.Packets.TestUDP;
@@ -82,8 +82,8 @@ public class NetworkListener extends Listener {
 					sendToAllExceptHim(ply, connection);
 					System.out.println("enterWorld");
 				}
-				if (object instanceof PositionUpdate) {
-					PositionUpdate update = (PositionUpdate) object;
+				if (object instanceof PlayerPositionUpdate) {
+					PlayerPositionUpdate update = (PlayerPositionUpdate) object;
 					if (update.character.charName.matches(playerConnection.character.charName)
 							&& update.character.charClass == playerConnection.character.charClass) {
 						playerConnection.x = update.x;

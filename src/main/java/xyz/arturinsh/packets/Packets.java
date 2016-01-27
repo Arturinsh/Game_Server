@@ -60,13 +60,19 @@ public class Packets {
 		public UserCharacter character;
 	}
 
-	public static class PositionUpdate {
+	public static class PlayerPositionUpdate {
 		public UserCharacter character;
 		public float x, y, z, r;
 	}
+	
+	public static class DogPositionUpdate{
+		public int ID;
+		public float x, y, z, r;
+	}
 
-	public static class PlayersSnapShot {
-		public List<PositionUpdate> snapshot;
+	public static class SnapShot {
+		public List<DogPositionUpdate> dogSnapshot;
+		public List<PlayerPositionUpdate> snapshot;
 		public Date time;
 	}
 }

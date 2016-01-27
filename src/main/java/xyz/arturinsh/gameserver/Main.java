@@ -16,16 +16,17 @@ import xyz.arturinsh.gameObjects.CharacterClass;
 import xyz.arturinsh.packets.Packets.AddPlayer;
 import xyz.arturinsh.packets.Packets.CharacterCreateFailed;
 import xyz.arturinsh.packets.Packets.CharacterCreateSuccess;
+import xyz.arturinsh.packets.Packets.DogPositionUpdate;
 import xyz.arturinsh.packets.Packets.EnterWorld;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.LogInFailed;
 import xyz.arturinsh.packets.Packets.LogInSuccess;
-import xyz.arturinsh.packets.Packets.PlayersSnapShot;
-import xyz.arturinsh.packets.Packets.PositionUpdate;
+import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
 import xyz.arturinsh.packets.Packets.Register;
 import xyz.arturinsh.packets.Packets.RegisterFailed;
 import xyz.arturinsh.packets.Packets.RegisterSuccess;
 import xyz.arturinsh.packets.Packets.RemovePlayer;
+import xyz.arturinsh.packets.Packets.SnapShot;
 import xyz.arturinsh.packets.Packets.TestUDP;
 import xyz.arturinsh.packets.Packets.UserCharacter;
 
@@ -48,8 +49,9 @@ public class Main {
 		} catch (IOException e) {
 			System.out.print(e);
 		}
+		GameWorld world = new GameWorld(server);
 		Timer timer = new Timer();
-		timer.schedule(new GameUpdate(server), 0, 50);
+		timer.schedule(new GameUpdate(server, world), 0, 50);
 	}
 
 	private static void registerKryo() {
@@ -70,8 +72,9 @@ public class Main {
 		kryo.register(CharacterCreateFailed.class);
 		kryo.register(TestUDP.class);
 		kryo.register(EnterWorld.class);
-		kryo.register(PositionUpdate.class);
-		kryo.register(PlayersSnapShot.class);
+		kryo.register(PlayerPositionUpdate.class);
+		kryo.register(DogPositionUpdate.class);
+		kryo.register(SnapShot.class);
 	}
 
 	private static void setLoggersToLogWarning() {

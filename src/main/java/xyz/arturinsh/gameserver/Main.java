@@ -51,7 +51,7 @@ public class Main {
 		}
 		GameWorld world = new GameWorld(server);
 		Timer timer = new Timer();
-		timer.schedule(new GameUpdate(server, world), 0, 50);
+		timer.schedule(new GameUpdate(server, world), 0, 1000);
 	}
 
 	private static void registerKryo() {

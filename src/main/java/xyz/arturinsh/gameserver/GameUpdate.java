@@ -55,6 +55,7 @@ public class GameUpdate extends TimerTask {
 		
 		snapShot.dogSnapshot.add(dogPos);
 		
+		System.out.println("Snap "+dogPos.x + " "+ dogPos.z);
 		//server.sendToAllUDP(snapShot);
 		snapShot.time = new Date();
 		for(PlayerConnection player : characters){

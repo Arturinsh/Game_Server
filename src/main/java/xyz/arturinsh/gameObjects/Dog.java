@@ -5,7 +5,7 @@ import xyz.arturinsh.packets.Packets.DogPositionUpdate;
 public class Dog {
 	public float x, y, z, r;
 	public int ID = 0;
-	public float moveSpeed = 4f;
+	public float moveSpeed = 0.5f;
 	public float destX = 0, destY = 0, destZ = 0;
 	public float startX = 0, startY = 0, startZ = 0;
 
@@ -37,7 +37,6 @@ public class Dog {
 	}
 
 	public void update() {
-		String isOnPoint = "false";
 		if (move) {
 			this.x += Math.sin(Math.toRadians(r)) * moveSpeed;
 			this.z += Math.cos(Math.toRadians(r)) * moveSpeed;
@@ -47,11 +46,9 @@ public class Dog {
 				this.x = destX;
 				this.y = destY;
 				this.z = destZ;
-				isOnPoint = "true";
 				move = false;
 			}
 		}
-		System.out.println(this.x + " " + this.z + " " + isOnPoint);
 	}
 
 	public DogPositionUpdate getDogPosUpdate() {

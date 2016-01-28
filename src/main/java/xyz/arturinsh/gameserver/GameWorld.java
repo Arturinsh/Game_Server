@@ -3,12 +3,12 @@ package xyz.arturinsh.gameserver;
 import com.esotericsoftware.kryonet.Server;
 
 import xyz.arturinsh.gameObjects.Dog;
+import xyz.arturinsh.gameserver.Main.PlayerConnection;
 
 public class GameWorld {
 	private Server server;
 
 	private Dog dog;
-
 
 	public GameWorld(Server server) {
 		this.server = server;
@@ -22,16 +22,18 @@ public class GameWorld {
 		// float nz = (float)(Math.cos(angle)*40);
 		//
 		//
-		//dog.move(move, 0, move);
+		followCoords();
 		dog.update();
 		// angle+=0.1;
 	}
 
-	private void followCoords(float x, float z) {
-	
-		
+	private void followCoords() {
+		if (server.getConnections().length > 1) {
+			PlayerConnection player = (PlayerConnection) server.getConnections()[1];
+			dog.move(player.x, player.y, player.z);
+		}
 	}
-
+	
 	public Dog getDog() {
 		return dog;
 	}

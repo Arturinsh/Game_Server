@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Server;
 import xyz.arturinsh.gameserver.Main.PlayerConnection;
 import xyz.arturinsh.packets.Packets.AddPlayer;
 import xyz.arturinsh.packets.Packets.EnterWorld;
+import xyz.arturinsh.packets.Packets.RemovePlayer;
 
 public class GameWorldBusiness {
 	private Server server;
@@ -15,10 +16,12 @@ public class GameWorldBusiness {
 	}
 
 	public void addCharacter(PlayerConnection player, EnterWorld enter) {
-		player.x = 0;
-		player.y = 0;
-		player.z = 0;
 		player.character = enter.character;
+		
+		EnterWorld success = new EnterWorld();
+		success.character = player.character;
+		player.sendTCP(success);
+		
 		
 		AddPlayer ply = new AddPlayer();
 		ply.character = enter.character;
@@ -26,8 +29,16 @@ public class GameWorldBusiness {
 		ply.character.y = 0;
 		ply.character.z = 0;
 		ply.character.r = 0;
-		
+
 		sendToAllExceptHim(ply, player);
+	}
+
+	public void removeCharacter(PlayerConnection player) {
+		if (player.character != null) {
+			RemovePlayer rmv = new RemovePlayer();
+			rmv.character = player.character;
+			server.sendToAllTCP(rmv);
+		}
 	}
 
 	private void sendToAllExceptHim(Object object, Connection connection) {
@@ -36,4 +47,5 @@ public class GameWorldBusiness {
 				con.sendTCP(object);
 		}
 	}
+
 }

@@ -31,18 +31,20 @@ public class GameWorld {
 	private void followCoords() {
 		if (server.getConnections().length > 0) {
 			PlayerConnection player = (PlayerConnection) server.getConnections()[0];
-			float len = length(player.x, player.y, player.z, 0f, 0f, 0f);
-//			System.out.println(len+" "+player.x+" "+player.z);
-			if (len < 20) {
-				dog.move(player.x, player.y, player.z);
-			} else
-				dog.move(0, 0, 0);
+			if (player.character != null) {
+				float len = length(player.character.x, player.character.y, player.character.z, 0f, 0f, 0f);
+				// System.out.println(len+" "+player.x+" "+player.z);
+				if (len < 20) {
+					dog.move(player.character.x, player.character.y, player.character.z);
+				} else
+					dog.move(0, 0, 0);
+			}
 		}
 	}
 
 	private float length(float x, float y, float z, float nx, float ny, float nz) {
 		return (float) Math.sqrt(Math.pow(nx - x, 2) + Math.pow(ny - y, 2) + Math.pow(nz - z, 2));
-	}   
+	}
 
 	public Dog getDog() {
 		return dog;

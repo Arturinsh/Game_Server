@@ -42,10 +42,10 @@ public class GameUpdate extends TimerTask {
 		for (PlayerConnection player : characters) {
 			PlayerPositionUpdate update = new PlayerPositionUpdate();
 			update.character = player.character;
-			update.character.x = player.x;
-			update.character.y = player.y;
-			update.character.z = player.z;
-			update.character.r = player.r;
+			update.character.x = player.character.x;
+			update.character.y = player.character.y;
+			update.character.z = player.character.z;
+			update.character.r = player.character.r;
 			snapShot.snapshot.add(update);
 		}
 		

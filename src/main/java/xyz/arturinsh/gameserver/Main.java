@@ -27,7 +27,6 @@ import xyz.arturinsh.packets.Packets.RegisterFailed;
 import xyz.arturinsh.packets.Packets.RegisterSuccess;
 import xyz.arturinsh.packets.Packets.RemovePlayer;
 import xyz.arturinsh.packets.Packets.SnapShot;
-import xyz.arturinsh.packets.Packets.TestUDP;
 import xyz.arturinsh.packets.Packets.UserCharacter;
 
 public class Main {
@@ -70,7 +69,6 @@ public class Main {
 		kryo.register(UserCharacter.class);
 		kryo.register(CharacterCreateSuccess.class);
 		kryo.register(CharacterCreateFailed.class);
-		kryo.register(TestUDP.class);
 		kryo.register(EnterWorld.class);
 		kryo.register(PlayerPositionUpdate.class);
 		kryo.register(DogPositionUpdate.class);
@@ -88,7 +86,6 @@ public class Main {
 
 		public User user;
 		public UserCharacter character;
-		public float x, y, z, r;
 		private ExecutorService tasks = Executors.newSingleThreadExecutor();
 
 		public void addTask(Runnable newTask) {

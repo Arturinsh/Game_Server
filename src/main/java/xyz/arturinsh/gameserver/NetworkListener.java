@@ -9,13 +9,10 @@ import com.esotericsoftware.kryonet.Server;
 
 import xyz.arturinsh.database.User;
 import xyz.arturinsh.gameserver.Main.PlayerConnection;
-import xyz.arturinsh.packets.Packets.AddPlayer;
 import xyz.arturinsh.packets.Packets.EnterWorld;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
 import xyz.arturinsh.packets.Packets.Register;
-import xyz.arturinsh.packets.Packets.RemovePlayer;
-import xyz.arturinsh.packets.Packets.TestUDP;
 import xyz.arturinsh.packets.Packets.UserCharacter;
 
 public class NetworkListener extends Listener {
@@ -34,13 +31,7 @@ public class NetworkListener extends Listener {
 	@Override
 	public void disconnected(Connection connection) {
 		PlayerConnection player = (PlayerConnection) connection;
-
-		if (player.character != null) {
-			RemovePlayer rmv = new RemovePlayer();
-			rmv.character = player.character;
-			server.sendToAllTCP(rmv);
-		}
-
+		new GameWorldBusiness(server).removeCharacter(player);
 	}
 
 	@Override
@@ -68,10 +59,10 @@ public class NetworkListener extends Listener {
 					PlayerPositionUpdate update = (PlayerPositionUpdate) object;
 					if (update.character.charName.matches(playerConnection.character.charName)
 							&& update.character.charClass == playerConnection.character.charClass) {
-						playerConnection.x = update.character.x;
-						playerConnection.y = update.character.y;
-						playerConnection.z = update.character.z;
-						playerConnection.r = update.character.r;
+						playerConnection.character.x = update.character.x;
+						playerConnection.character.y = update.character.y;
+						playerConnection.character.z = update.character.z;
+						playerConnection.character.r = update.character.r;
 					}
 				}
 			}

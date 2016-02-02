@@ -30,6 +30,18 @@ public class GameCharacter {
 	@Column(name = "Class")
 	private CharacterClass charClass;
 
+	@Column(name = "X")
+	private float X = 0;
+
+	@Column(name = "Y")
+	private float Y = 0;
+
+	@Column(name = "Z")
+	private float Z = 0;
+
+	@Column(name = "R")
+	private float R = 0;
+
 	public long getId() {
 		return Id;
 	}
@@ -60,6 +72,29 @@ public class GameCharacter {
 
 	public void setCharClass(CharacterClass charClass) {
 		this.charClass = charClass;
+	}
+
+	public float getX() {
+		return X;
+	}
+
+	public float getY() {
+		return Y;
+	}
+
+	public float getZ() {
+		return Z;
+	}
+
+	public float getR() {
+		return R;
+	}
+
+	public void setPosRot(float x, float y, float z, float r) {
+		X = x;
+		Y = y;
+		Z = z;
+		R = r;
 	}
 
 }

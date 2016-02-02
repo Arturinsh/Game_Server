@@ -55,52 +55,26 @@ public class NetworkListener extends Listener {
 				if (object instanceof Register) {
 					new LogRegBusiness(server, loggedIn).registerUser(playerConnection, (Register) object);
 				}
+
 				if (object instanceof UserCharacter) {
 					new CharacterCreateBusiness(server).createCharacter(playerConnection, (UserCharacter) object);
 				}
-				if (object instanceof TestUDP) {
-					// TestUDP test = (TestUDP) object;
-					// System.out.println(test.text+"
-					// "+playerConnection.getRemoteAddressUDP());
-					// TestUDP test2 = new TestUDP();
-					// test2.text = test.text;
-					// playerConnection.sendUDP(test2);
-				}
+
 				if (object instanceof EnterWorld) {
-					EnterWorld enterW = (EnterWorld) object;
-
-					playerConnection.x = 0;
-					playerConnection.y = 0;
-					playerConnection.z = 0;
-					playerConnection.character = enterW.character;
-
-					AddPlayer ply = new AddPlayer();
-					ply.character = enterW.character;
-					ply.x = 0;
-					ply.y = 0;
-					ply.z = 0;
-					sendToAllExceptHim(ply, connection);
-					System.out.println("enterWorld");
+					new GameWorldBusiness(server).addCharacter(playerConnection, (EnterWorld) object);
 				}
+				
 				if (object instanceof PlayerPositionUpdate) {
 					PlayerPositionUpdate update = (PlayerPositionUpdate) object;
 					if (update.character.charName.matches(playerConnection.character.charName)
 							&& update.character.charClass == playerConnection.character.charClass) {
-						playerConnection.x = update.x;
-						playerConnection.y = update.y;
-						playerConnection.z = update.z;
-						playerConnection.r = update.r;
+						playerConnection.x = update.character.x;
+						playerConnection.y = update.character.y;
+						playerConnection.z = update.character.z;
+						playerConnection.r = update.character.r;
 					}
 				}
 			}
 		});
-	}
-
-	private void sendToAllExceptHim(Object object, Connection connection) {
-		for (Connection con : server.getConnections()) {
-			if (con != connection)
-				con.sendTCP(object);
-		}
-
 	}
 }

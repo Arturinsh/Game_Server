@@ -31,8 +31,6 @@ public class Packets {
 
 	public static class AddPlayer {
 		public UserCharacter character;
-		public float x, y, z;
-		// TODO add rotation// change to another class
 	}
 
 	public static class RemovePlayer {
@@ -42,6 +40,7 @@ public class Packets {
 	public static class UserCharacter {
 		public String charName;
 		public CharacterClass charClass;
+		public float x, y, z, r;
 	}
 
 	public static class CharacterCreateSuccess {
@@ -62,7 +61,6 @@ public class Packets {
 
 	public static class PlayerPositionUpdate {
 		public UserCharacter character;
-		public float x, y, z, r;
 	}
 	
 	public static class DogPositionUpdate{

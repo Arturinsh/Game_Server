@@ -34,13 +34,14 @@ public class Dog {
 
 		calculateRotation(destX, destZ);
 		move = true;
+//		System.out.println(r);
 	}
 
 	public void update() {
 		if (move) {
 			this.x += Math.sin(Math.toRadians(r)) * moveSpeed;
 			this.z += Math.cos(Math.toRadians(r)) * moveSpeed;
-			
+
 			if (pointOnLine(x, y, z)) {
 				move = false;
 				this.x = destX;

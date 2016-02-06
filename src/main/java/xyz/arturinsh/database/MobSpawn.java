@@ -5,9 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import xyz.arturinsh.gameObjects.MobType;
 
 @Entity
 @Table(name = "MobSpawn")
@@ -27,9 +27,8 @@ public class MobSpawn {
 	@Column(name = "Z")
 	private float Z;
 	
-	@ManyToOne
-	@JoinColumn(name = "MobId")
-	private MobType MobType;
+	@Column(name ="Type")
+	private MobType mobType;
 	
 	public float getX() {
 		return X;

@@ -13,7 +13,6 @@ public class GameWorld {
 	public GameWorld(Server server) {
 		this.server = server;
 		this.dog = new Dog();
-		dog.move(100, 0, 100);
 	}
 
 	public void update() {

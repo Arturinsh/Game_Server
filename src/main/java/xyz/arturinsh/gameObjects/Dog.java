@@ -34,7 +34,7 @@ public class Dog {
 
 		calculateRotation(destX, destZ);
 		move = true;
-//		System.out.println(r);
+//		System.out.println(r); 
 	}
 
 	public void update() {

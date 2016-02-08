@@ -8,8 +8,9 @@ import java.util.TimerTask;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
+import xyz.arturinsh.gameObjects.Mob;
 import xyz.arturinsh.gameserver.Main.PlayerConnection;
-import xyz.arturinsh.packets.Packets.DogPositionUpdate;
+import xyz.arturinsh.packets.Packets.MobUpdate;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
 import xyz.arturinsh.packets.Packets.SnapShot;
 
@@ -17,10 +18,12 @@ public class GameUpdate extends TimerTask {
 
 	private Server server;
 	private GameWorld world;
+	private List<Mob> mobs;
 
 	public GameUpdate(Server _server, GameWorld world) {
 		server = _server;
 		this.world = world;
+		mobs = world.getMobs();
 	}
 
 	@Override
@@ -48,19 +51,23 @@ public class GameUpdate extends TimerTask {
 			update.character.r = player.character.r;
 			snapShot.snapshot.add(update);
 		}
-		
-		snapShot.dogSnapshot = new ArrayList<DogPositionUpdate>();
-		
-		DogPositionUpdate dogPos= world.getDog().getDogPosUpdate();
-		
-		snapShot.dogSnapshot.add(dogPos);
-		
-		//server.sendToAllUDP(snapShot);
+
+		snapShot.mobSnapshot = new ArrayList<MobUpdate>();
+		for (Mob mob : mobs) {
+			snapShot.mobSnapshot.add(mob.getMobUpdateData());
+		}
+
+		// snapShot.dogSnapshot = new ArrayList<DogPositionUpdate>();
+		//
+		// DogPositionUpdate dogPos= world.getDog().getDogPosUpdate();
+		//
+		// snapShot.dogSnapshot.add(dogPos);
+
+		// server.sendToAllUDP(snapShot);
 		snapShot.time = new Date();
-		for(PlayerConnection player : characters){
+		for (PlayerConnection player : characters) {
 			player.sendUDP(snapShot);
 		}
 	}
-
 
 }

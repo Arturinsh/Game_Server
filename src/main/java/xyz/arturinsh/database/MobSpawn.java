@@ -30,6 +30,10 @@ public class MobSpawn {
 	@Column(name ="Type")
 	private MobType mobType;
 	
+	public MobType getType(){
+		return mobType;
+	}
+	
 	public float getX() {
 		return X;
 	}
@@ -42,5 +46,8 @@ public class MobSpawn {
 		return Z;
 	}
 	
+	public long getId(){
+		return Id;
+	}
 	
 }

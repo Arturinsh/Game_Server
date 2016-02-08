@@ -13,14 +13,15 @@ import com.esotericsoftware.kryonet.Server;
 
 import xyz.arturinsh.database.User;
 import xyz.arturinsh.gameObjects.CharacterClass;
+import xyz.arturinsh.gameObjects.MobType;
 import xyz.arturinsh.packets.Packets.AddPlayer;
 import xyz.arturinsh.packets.Packets.CharacterCreateFailed;
 import xyz.arturinsh.packets.Packets.CharacterCreateSuccess;
-import xyz.arturinsh.packets.Packets.DogPositionUpdate;
 import xyz.arturinsh.packets.Packets.EnterWorld;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.LogInFailed;
 import xyz.arturinsh.packets.Packets.LogInSuccess;
+import xyz.arturinsh.packets.Packets.MobUpdate;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
 import xyz.arturinsh.packets.Packets.Register;
 import xyz.arturinsh.packets.Packets.RegisterFailed;
@@ -71,7 +72,8 @@ public class Main {
 		kryo.register(CharacterCreateFailed.class);
 		kryo.register(EnterWorld.class);
 		kryo.register(PlayerPositionUpdate.class);
-		kryo.register(DogPositionUpdate.class);
+		kryo.register(MobType.class);
+		kryo.register(MobUpdate.class);
 		kryo.register(SnapShot.class);
 	}
 

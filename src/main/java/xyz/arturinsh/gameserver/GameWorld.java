@@ -1,18 +1,29 @@
 package xyz.arturinsh.gameserver;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.Session;
+
 import com.esotericsoftware.kryonet.Server;
 
+import xyz.arturinsh.database.MobSpawn;
 import xyz.arturinsh.gameObjects.Dog;
+import xyz.arturinsh.gameObjects.Mob;
 import xyz.arturinsh.gameserver.Main.PlayerConnection;
+import xyz.arturinsh.helpers.SessionFactoryUtil;
 
 public class GameWorld {
 	private Server server;
 
 	private Dog dog;
 
+	private List<Mob> mobs;
+
 	public GameWorld(Server server) {
 		this.server = server;
-		this.dog = new Dog();
+		// this.dog = new Dog();
+		initMobs();
 	}
 
 	public void update() {
@@ -21,8 +32,8 @@ public class GameWorld {
 		// float nz = (float)(Math.cos(angle)*40);
 		//
 		//
-		dog.update();
-		followCoords();
+		// dog.update();
+		// followCoords();
 
 		// angle+=0.1;
 	}
@@ -47,6 +58,27 @@ public class GameWorld {
 
 	public Dog getDog() {
 		return dog;
+	}
+
+	private void initMobs() {
+		System.out.println("InitMobs");
+		mobs = new ArrayList<Mob>();
+		Session session = SessionFactoryUtil.getSessionFactory().openSession();
+		List<MobSpawn> list = session.createCriteria(MobSpawn.class).list();
+
+		for (MobSpawn spawn : list) {
+			Mob temp = new Mob();
+			temp.setPosition(spawn.getX(), spawn.getY(), spawn.getZ());
+			temp.type = spawn.getType();
+			temp.Id = spawn.getId();
+			mobs.add(temp);
+			System.out.println(temp.Id+" "+temp.x + " " + temp.y + " " + temp.z + " " + temp.type);
+		}
+		System.out.println("EndInit");
+	}
+
+	public List<Mob> getMobs() {
+		return mobs;
 	}
 
 }

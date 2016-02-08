@@ -1,19 +1,21 @@
 package xyz.arturinsh.gameObjects;
 
-public class Dog {
+import xyz.arturinsh.packets.Packets.MobUpdate;
+
+public class Mob {
 	public float x, y, z, r;
-	public int ID = 0;
-	public float moveSpeed = 0.5f;
-	public float destX = 0, destY = 0, destZ = 0;
-	public float startX = 0, startY = 0, startZ = 0;
+	public float moveSpeed;
+	public float destX, destY, destZ;
+	public float startX, startY, startZ;
+
+	public long Id;
 
 	private boolean move = false;
 
-	public Dog() {
-		x = 0;
-		y = 0;
-		z = 0;
-		r = 0;
+	public MobType type;
+
+	public Mob() {
+
 	}
 
 	public void setPosition(float x, float y, float z) {
@@ -32,7 +34,6 @@ public class Dog {
 
 		calculateRotation(destX, destZ);
 		move = true;
-//		System.out.println(r); 
 	}
 
 	public void update() {
@@ -49,16 +50,6 @@ public class Dog {
 			}
 		}
 	}
-//
-//	public DogPositionUpdate getDogPosUpdate() {
-//		DogPositionUpdate dogPosUpdate = new DogPositionUpdate();
-//		dogPosUpdate.x = x;
-//		dogPosUpdate.y = y;
-//		dogPosUpdate.z = z;
-//		dogPosUpdate.r = r;
-//		dogPosUpdate.ID = ID;
-//		return dogPosUpdate;
-//	}
 
 	private void calculateRotation(float nx, float nz) {
 		float tx = nx - x;
@@ -81,4 +72,13 @@ public class Dog {
 		return true;
 	}
 
+	public MobUpdate getMobUpdateData() {
+		MobUpdate update = new MobUpdate();
+		update.x = x;
+		update.y = y;
+		update.z = z;
+		update.r = r;
+		update.ID = Id;
+		return update;
+	}
 }

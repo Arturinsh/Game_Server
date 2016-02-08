@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import xyz.arturinsh.gameObjects.CharacterClass;
+import xyz.arturinsh.gameObjects.MobType;
 
 public class Packets {
 	public static class LogIn {
@@ -58,14 +59,15 @@ public class Packets {
 	public static class PlayerPositionUpdate {
 		public UserCharacter character;
 	}
-	
-	public static class DogPositionUpdate{
-		public int ID;
-		public float x, y, z, r;
+
+	public static class MobUpdate{
+		public long ID;
+		public float x,y,z,r;
+		public MobType type;
 	}
 
 	public static class SnapShot {
-		public List<DogPositionUpdate> dogSnapshot;
+		public List<MobUpdate> mobSnapshot;
 		public List<PlayerPositionUpdate> snapshot;
 		public Date time;
 	}

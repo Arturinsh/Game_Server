@@ -57,13 +57,6 @@ public class GameUpdate extends TimerTask {
 			snapShot.mobSnapshot.add(mob.getMobUpdateData());
 		}
 
-		// snapShot.dogSnapshot = new ArrayList<DogPositionUpdate>();
-		//
-		// DogPositionUpdate dogPos= world.getDog().getDogPosUpdate();
-		//
-		// snapShot.dogSnapshot.add(dogPos);
-
-		// server.sendToAllUDP(snapShot);
 		snapShot.time = new Date();
 		for (PlayerConnection player : characters) {
 			player.sendUDP(snapShot);

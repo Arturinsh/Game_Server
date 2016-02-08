@@ -84,7 +84,7 @@ public class Main {
 		System.setProperty("com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
 	}
 
-	static class PlayerConnection extends Connection {
+	public static class PlayerConnection extends Connection {
 
 		public User user;
 		public UserCharacter character;

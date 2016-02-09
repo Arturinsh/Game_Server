@@ -1,16 +1,18 @@
 package xyz.arturinsh.gameObjects;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import xyz.arturinsh.gameserver.Main.PlayerConnection;
 import xyz.arturinsh.packets.Packets.MobUpdate;
+import xyz.arturinsh.packets.Packets.UserCharacter;
 
 public class Mob {
 	public float x, y, z, r;
 	public float moveSpeed = 0.5f;
 	public float destX, destY, destZ;
 	public float startX, startY, startZ;
-
+	public float defenseRadius = 20;
 	public long Id;
 
 	private boolean move = false;
@@ -20,8 +22,6 @@ public class Mob {
 	private float spawnX, spawnY, spawnZ;
 
 	private String destinationPlayerName = null;
-
-	private float followRange = 20;
 
 	public Mob(float _spawnX, float _spawnY, float _spawnZ) {
 		this.spawnX = _spawnX;
@@ -49,18 +49,40 @@ public class Mob {
 	}
 
 	public void update(List<PlayerConnection> players) {
+		List<PlayerRange> ranges = new ArrayList<PlayerRange>();
 		for (PlayerConnection player : players) {
-			if (length(player.character.x, player.character.y, player.character.z) < 20) {
-				move(player.character.x, player.character.y, player.character.z);
-			} else {
-				move(spawnX, spawnY, spawnZ);
+			float distanceToSpawn = length(spawnX, spawnY, spawnZ, player.character.x, player.character.y,
+					player.character.z);
+			if (distanceToSpawn < defenseRadius) {
+				float distanceToMob = length(x, y, z, player.character.x, player.character.y, player.character.z);
+				ranges.add(new PlayerRange(distanceToMob, player.character));
 			}
 		}
 
-		if (move) {
+		if (ranges.size() > 0) {
+			if (destinationPlayerName == null) {
+				UserCharacter moveChar = minRangeUserCharacter(ranges);
+				destinationPlayerName = moveChar.charName;
+				move(moveChar.x, moveChar.y, moveChar.z);
+			} else {
+				UserCharacter moveChar = getCharacterInRanges(ranges, destinationPlayerName);
+				if (moveChar != null) {
+					move(moveChar.x, moveChar.y, moveChar.z);
+				} else {
+					moveChar = minRangeUserCharacter(ranges);
+					destinationPlayerName = moveChar.charName;
+					move(moveChar.x, moveChar.y, moveChar.z);
+				}
+			}
+		} else {
+			move(spawnX, spawnY, spawnZ);
+		}
+
+		if (move)
+		{
 			this.x += Math.sin(Math.toRadians(r)) * moveSpeed;
 			this.z += Math.cos(Math.toRadians(r)) * moveSpeed;
-			
+
 			if (pointOnLine(x, y, z)) {
 				this.x = destX;
 				this.y = destY;
@@ -68,6 +90,30 @@ public class Mob {
 				move = false;
 			}
 		}
+	}
+
+	private UserCharacter getCharacterInRanges(List<PlayerRange> list, String charName) {
+		for (PlayerRange player : list) {
+			if (charName.contentEquals(player.charater.charName)) {
+				return player.charater;
+			}
+		}
+		return null;
+	}
+
+	private UserCharacter minRangeUserCharacter(List<PlayerRange> list) {
+		PlayerRange minRange = new PlayerRange(0, null);
+		boolean first = true;
+		for (PlayerRange player : list) {
+			if (first) {
+				minRange = player;
+				first = false;
+			}
+			if (player.distanceToMob < minRange.distanceToMob) {
+				minRange = player;
+			}
+		}
+		return minRange.charater;
 	}
 
 	private void calculateRotation(float nx, float nz) {
@@ -101,7 +147,17 @@ public class Mob {
 		return update;
 	}
 
-	private float length(float nx, float ny, float nz) {
-		return (float) Math.sqrt(Math.pow(nx - spawnX, 2) + Math.pow(ny - spawnY, 2) + Math.pow(nz - spawnZ, 2));
+	private float length(float x, float y, float z, float nx, float ny, float nz) {
+		return (float) Math.sqrt(Math.pow(nx - x, 2) + Math.pow(ny - y, 2) + Math.pow(nz - z, 2));
+	}
+
+	private class PlayerRange {
+		public float distanceToMob;
+		public UserCharacter charater;
+
+		public PlayerRange(float _distance, UserCharacter _charater) {
+			distanceToMob = _distance;
+			charater = _charater;
+		}
 	}
 }

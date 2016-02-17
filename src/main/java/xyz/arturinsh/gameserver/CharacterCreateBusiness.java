@@ -54,6 +54,7 @@ public class CharacterCreateBusiness {
 		} else {
 			playerConnection.sendTCP(new CharacterCreateFailed());
 		}
+		session.close();
 	}
 	
 	//TODO dublicate of method

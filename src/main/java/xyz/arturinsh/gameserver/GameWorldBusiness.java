@@ -32,18 +32,19 @@ public class GameWorldBusiness {
 			enter.character.y = character.getY();
 			enter.character.z = character.getZ();
 			enter.character.r = character.getR();
-			
+
 			player.character = enter.character;
-			
+
 			EnterWorld success = new EnterWorld();
 			success.character = player.character;
 			player.sendTCP(success);
 
 			AddPlayer ply = new AddPlayer();
 			ply.character = enter.character;
-			
+
 			sendToAllExceptHim(ply, player);
 		}
+		session.close();
 	}
 
 	public void removeCharacter(PlayerConnection player) {
@@ -60,6 +61,7 @@ public class GameWorldBusiness {
 				session.getTransaction().commit();
 			}
 
+			session.close();
 			RemovePlayer rmv = new RemovePlayer();
 			rmv.character = player.character;
 			server.sendToAllTCP(rmv);

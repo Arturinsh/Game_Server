@@ -45,12 +45,14 @@ public class LogRegBusiness {
 
 	private User canLogIn(PlayerConnection playerConnection, LogIn login) {
 		Session session = SessionFactoryUtil.getSessionFactory().openSession();
+
 		Query query = session.createQuery("FROM User WHERE username =:name");
 		query.setParameter("name", login.userName);
 
 		List<User> users = query.list();
 
 		session.close();
+
 		if (userNameOk(login.userName) && pswOk(login.password) && users.size() > 0) {
 			if (users.get(0).getPassword().matches(login.password)) {
 				if (isInLoggedIn(login)) {
@@ -66,12 +68,13 @@ public class LogRegBusiness {
 				}
 				User loginUser = users.get(0);
 				loginUser.getCharacters().size();
-				
+
 				return loginUser;
 			}
 		}
 		LogInFailed fail = new LogInFailed();
 		playerConnection.sendTCP(fail);
+		session.close();
 		return null;
 	}
 
@@ -117,10 +120,10 @@ public class LogRegBusiness {
 		return false;
 	}
 
-	//TODO dublicate of method
+	// TODO dublicate of method
 	private List<UserCharacter> convertChars(User user) {
 		List<UserCharacter> characters = new ArrayList<UserCharacter>();
-		
+
 		for (GameCharacter usrChar : user.getCharacters()) {
 			UserCharacter newChar = new UserCharacter();
 			newChar.charName = usrChar.getCharacterName();

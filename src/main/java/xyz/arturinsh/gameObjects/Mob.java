@@ -38,10 +38,10 @@ public class Mob {
 
 	public void move(float nx, float ny, float nz) {
 		startX = x;
-		startY = y;
+		startY = 0;
 		startZ = z;
 		destX = nx;
-		destY = ny;
+		destY = 0;
 		destZ = nz;
 
 		calculateRotation(destX, destZ);

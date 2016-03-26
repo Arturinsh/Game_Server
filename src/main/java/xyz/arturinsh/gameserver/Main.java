@@ -1,6 +1,7 @@
 package xyz.arturinsh.gameserver;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Timer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -88,6 +89,7 @@ public class Main {
 
 		public User user;
 		public UserCharacter character;
+		public Date lastTimeStamp ;
 		private ExecutorService tasks = Executors.newSingleThreadExecutor();
 
 		public void addTask(Runnable newTask) {

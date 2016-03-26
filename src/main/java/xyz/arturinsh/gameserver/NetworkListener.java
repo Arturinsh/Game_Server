@@ -54,7 +54,7 @@ public class NetworkListener extends Listener {
 				if (object instanceof EnterWorld) {
 					new GameWorldBusiness(server).addCharacter(playerConnection, (EnterWorld) object);
 				}
-				
+
 				if (object instanceof PlayerPositionUpdate) {
 					PlayerPositionUpdate update = (PlayerPositionUpdate) object;
 					if (update.character.charName.matches(playerConnection.character.charName)
@@ -63,6 +63,9 @@ public class NetworkListener extends Listener {
 						playerConnection.character.y = update.character.y;
 						playerConnection.character.z = update.character.z;
 						playerConnection.character.r = update.character.r;
+						playerConnection.lastTimeStamp = update.timestamp;
+//						System.out.println(playerConnection.character.x + " " + playerConnection.character.z + " "
+//								+ playerConnection.character.r);
 					}
 				}
 			}

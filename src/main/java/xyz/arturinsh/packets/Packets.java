@@ -58,6 +58,7 @@ public class Packets {
 
 	public static class PlayerPositionUpdate {
 		public UserCharacter character;
+		public Date timestamp;
 	}
 
 	public static class MobUpdate{

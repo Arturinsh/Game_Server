@@ -43,14 +43,14 @@ public class Main {
 			}
 		};
 		registerKryo();
-		server.addListener(new NetworkListener(server));
+		GameWorld world = new GameWorld(server);
+		server.addListener(new NetworkListener(server, world));
 		server.start();
 		try {
 			server.bind(2300, 54777);
 		} catch (IOException e) {
 			System.out.print(e);
 		}
-		GameWorld world = new GameWorld(server);
 		Timer timer = new Timer();
 		timer.schedule(new GameUpdate(server, world), 0, 50);
 	}

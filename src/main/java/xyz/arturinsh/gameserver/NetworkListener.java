@@ -18,9 +18,10 @@ import xyz.arturinsh.packets.Packets.UserCharacter;
 public class NetworkListener extends Listener {
 	private Server server;
 	private List<User> loggedIn = new ArrayList<User>();
-
-	public NetworkListener(Server _server) {
+	private GameWorld world;
+	public NetworkListener(Server _server, GameWorld _world) {
 		server = _server;
+		world = _world;
 	}
 
 	@Override
@@ -57,16 +58,7 @@ public class NetworkListener extends Listener {
 
 				if (object instanceof PlayerPositionUpdate) {
 					PlayerPositionUpdate update = (PlayerPositionUpdate) object;
-					if (update.character.charName.matches(playerConnection.character.charName)
-							&& update.character.charClass == playerConnection.character.charClass) {
-						playerConnection.character.x = update.character.x;
-						playerConnection.character.y = update.character.y;
-						playerConnection.character.z = update.character.z;
-						playerConnection.character.r = update.character.r;
-						playerConnection.lastTimeStamp = update.timestamp;
-//						System.out.println(playerConnection.character.x + " " + playerConnection.character.z + " "
-//								+ playerConnection.character.r);
-					}
+					world.playerUpdate(update, playerConnection);
 				}
 			}
 		});

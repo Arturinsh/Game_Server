@@ -20,7 +20,7 @@ public class PlayerConnection extends Connection {
 
 	public BoundingBox getBoundingBox() {
 		Point center = new Point(character.x, character.z);
-		BoundingBox box = new BoundingBox(center, new Point(10, 0), new Point(-10, 0), new Point(0, -10), new Point(0, 10));
+		BoundingBox box = new BoundingBox(center, new Point(2, 0), new Point(-2, 0), new Point(0, -2), new Point(0, 2));
 		box.addAngle((int)character.r);
 		return box;
 	}

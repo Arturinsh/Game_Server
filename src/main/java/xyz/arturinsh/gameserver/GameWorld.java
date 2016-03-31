@@ -76,6 +76,17 @@ public class GameWorld {
 		}
 
 		if (list.size() > 1) {
+//			ArrayList<Point> test1 = list.get(0).getBoundingBox().getPoints();
+//			ArrayList<Point> test2 = list.get(1).getBoundingBox().getPoints();
+//
+//			System.out.println(
+//					test1.get(0).x + ":" + test1.get(0).y +"First=" + test1.get(1).x + ":" + test1.get(1).y + " " + test1.get(2).x + ":" + test1.get(2).y + " "
+//							+ test1.get(3).x + ":" + test1.get(3).y + " " + test1.get(4).x + ":" + test1.get(4).y);
+//
+//			System.out.println(
+//				 test2.get(0).x + ":" + test2.get(0).y +"Second=" + test2.get(1).x + ":" + test2.get(1).y + " " + test2.get(2).x + ":" + test2.get(2).y + " "
+//							+ test2.get(3).x + ":" + test2.get(3).y + " " + test2.get(4).x + ":" + test2.get(4).y);
+
 			ArrayList<Vector2D> normals_box1 = list.get(0).getBoundingBox().getNorm();
 			ArrayList<Vector2D> normals_box2 = list.get(1).getBoundingBox().getNorm();
 
@@ -96,33 +107,40 @@ public class GameWorld {
 				for (int i = 0; i < normals_box2.size(); i++) {
 					MinMax result_P1 = getMinMax(vecs_box1, normals_box2.get(i));
 					MinMax result_P2 = getMinMax(vecs_box2, normals_box2.get(i));
-					
+
 					isSeperated = result_P1.maxProj < result_P2.minProj || result_P2.maxProj < result_P1.minProj;
-//					System.out.println(result_P1.maxProj+ "<"+result_P2.minProj +"||"+result_P2.maxProj+"<"+result_P1.minProj);
+					// System.out.println(result_P1.maxProj+
+					// "<"+result_P2.minProj
+					// +"||"+result_P2.maxProj+"<"+result_P1.minProj);
 					if (isSeperated)
 						break;
 				}
 			}
-			
-//			MinMax result_P1 = getMinMax(vecs_box1, normals_box1.get(1));
-//			MinMax result_P2 = getMinMax(vecs_box2, normals_box1.get(1));
-//			MinMax result_Q1 = getMinMax(vecs_box1, normals_box1.get(0));
-//			MinMax result_Q2 = getMinMax(vecs_box1, normals_box1.get(0));
-//			
-//			MinMax result_R1 = getMinMax(vecs_box1, normals_box2.get(1));
-//			MinMax result_R2 = getMinMax(vecs_box2, normals_box2.get(1));
-//			MinMax result_S1 = getMinMax(vecs_box1, normals_box2.get(0));
-//			MinMax result_S2 = getMinMax(vecs_box1, normals_box2.get(0));
-//			
-//			
-//			boolean seperate_p = result_P1.maxProj < result_P2.minProj || result_P2.maxProj < result_P1.minProj;
-//			boolean seperate_Q = result_Q1.maxProj < result_Q2.minProj || result_Q2.maxProj < result_Q1.minProj;
-//			boolean seperate_R = result_R1.maxProj < result_R2.minProj || result_R2.maxProj < result_R1.minProj;
-//			boolean seperate_S = result_S1.maxProj < result_S2.minProj || result_S2.maxProj < result_S1.minProj;
-//			
-//			isSeperated = seperate_p || seperate_Q || seperate_R || seperate_S;
-			
-			if(isSeperated)
+
+			// MinMax result_P1 = getMinMax(vecs_box1, normals_box1.get(1));
+			// MinMax result_P2 = getMinMax(vecs_box2, normals_box1.get(1));
+			// MinMax result_Q1 = getMinMax(vecs_box1, normals_box1.get(0));
+			// MinMax result_Q2 = getMinMax(vecs_box1, normals_box1.get(0));
+			//
+			// MinMax result_R1 = getMinMax(vecs_box1, normals_box2.get(1));
+			// MinMax result_R2 = getMinMax(vecs_box2, normals_box2.get(1));
+			// MinMax result_S1 = getMinMax(vecs_box1, normals_box2.get(0));
+			// MinMax result_S2 = getMinMax(vecs_box1, normals_box2.get(0));
+			//
+			//
+			// boolean seperate_p = result_P1.maxProj < result_P2.minProj ||
+			// result_P2.maxProj < result_P1.minProj;
+			// boolean seperate_Q = result_Q1.maxProj < result_Q2.minProj ||
+			// result_Q2.maxProj < result_Q1.minProj;
+			// boolean seperate_R = result_R1.maxProj < result_R2.minProj ||
+			// result_R2.maxProj < result_R1.minProj;
+			// boolean seperate_S = result_S1.maxProj < result_S2.minProj ||
+			// result_S2.maxProj < result_S1.minProj;
+			//
+			// isSeperated = seperate_p || seperate_Q || seperate_R ||
+			// seperate_S;
+
+			if (isSeperated)
 				System.out.println("Seperated");
 			else
 				System.out.println("Connects");

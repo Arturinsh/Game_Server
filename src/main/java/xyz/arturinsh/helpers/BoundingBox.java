@@ -24,15 +24,15 @@ public class BoundingBox {
 
 	public void addAngle(int angle) {
 		double radians = Math.toRadians(angle);
-		for (Point point : points) {
-			float xLength = point.x - center.x;
-			float yLength = point.y - center.y;
+		for (int i=1; i<points.size();i++) {
+			float xLength = points.get(i).x - center.x;
+			float yLength = points.get(i).y - center.y;
 
-			point.x = (float) (xLength * Math.cos(radians) - yLength * Math.sin(radians));
-			point.y = (float) (xLength * Math.sin(radians) + yLength * Math.cos(radians));
+			points.get(i).x = (float) (xLength * Math.cos(radians) - yLength * Math.sin(radians));
+			points.get(i).y = (float) (xLength * Math.sin(radians) + yLength * Math.cos(radians));
 
-			point.x += center.x;
-			point.y += center.y;
+			points.get(i).x += center.x;
+			points.get(i).y += center.y;
 		}
 	}
 

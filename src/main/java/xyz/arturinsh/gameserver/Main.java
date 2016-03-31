@@ -15,6 +15,7 @@ import com.esotericsoftware.kryonet.Server;
 import xyz.arturinsh.database.User;
 import xyz.arturinsh.gameObjects.CharacterClass;
 import xyz.arturinsh.gameObjects.MobType;
+import xyz.arturinsh.gameObjects.PlayerConnection;
 import xyz.arturinsh.packets.Packets.AddPlayer;
 import xyz.arturinsh.packets.Packets.CharacterCreateFailed;
 import xyz.arturinsh.packets.Packets.CharacterCreateSuccess;
@@ -85,15 +86,5 @@ public class Main {
 		System.setProperty("com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
 	}
 
-	public static class PlayerConnection extends Connection {
-
-		public User user;
-		public UserCharacter character;
-		public Date lastTimeStamp ;
-		private ExecutorService tasks = Executors.newSingleThreadExecutor();
-
-		public void addTask(Runnable newTask) {
-			tasks.execute(newTask);
-		}
-	}
+	
 }

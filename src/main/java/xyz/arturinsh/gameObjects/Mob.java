@@ -3,7 +3,6 @@ package xyz.arturinsh.gameObjects;
 import java.util.ArrayList;
 import java.util.List;
 
-import xyz.arturinsh.gameserver.Main.PlayerConnection;
 import xyz.arturinsh.packets.Packets.MobUpdate;
 import xyz.arturinsh.packets.Packets.UserCharacter;
 

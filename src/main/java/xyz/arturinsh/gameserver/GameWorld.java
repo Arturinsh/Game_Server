@@ -16,7 +16,7 @@ import com.esotericsoftware.kryonet.Server;
 
 import xyz.arturinsh.database.MobSpawn;
 import xyz.arturinsh.gameObjects.Mob;
-import xyz.arturinsh.gameserver.Main.PlayerConnection;
+import xyz.arturinsh.gameObjects.PlayerConnection;
 import xyz.arturinsh.helpers.SessionFactoryUtil;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
 
@@ -37,8 +37,9 @@ public class GameWorld {
 		System.out.println("Init Bounding Map");
 		BufferedImage img = null;
 		try {
-			img = ImageIO.read(new File("src/main/java/MapBounds.png"));
+			img = ImageIO.read(new File("res/MapBounds.png"));
 		} catch (IOException e) {
+			System.out.println("Failed to initialize bounding map");
 			e.printStackTrace();
 		}
 		boundingMap = new int[img.getHeight()][img.getWidth()];

@@ -9,7 +9,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
 import xyz.arturinsh.gameObjects.Mob;
-import xyz.arturinsh.gameserver.Main.PlayerConnection;
+import xyz.arturinsh.gameObjects.PlayerConnection;
 import xyz.arturinsh.packets.Packets.MobUpdate;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
 import xyz.arturinsh.packets.Packets.SnapShot;

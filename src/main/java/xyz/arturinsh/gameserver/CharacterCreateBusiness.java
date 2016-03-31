@@ -11,7 +11,7 @@ import com.esotericsoftware.kryonet.Server;
 import xyz.arturinsh.database.GameCharacter;
 import xyz.arturinsh.database.User;
 import xyz.arturinsh.gameObjects.CharacterClass;
-import xyz.arturinsh.gameserver.Main.PlayerConnection;
+import xyz.arturinsh.gameObjects.PlayerConnection;
 import xyz.arturinsh.helpers.SessionFactoryUtil;
 import xyz.arturinsh.packets.Packets.CharacterCreateFailed;
 import xyz.arturinsh.packets.Packets.CharacterCreateSuccess;

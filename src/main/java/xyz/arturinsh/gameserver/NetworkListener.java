@@ -8,7 +8,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import xyz.arturinsh.database.User;
-import xyz.arturinsh.gameserver.Main.PlayerConnection;
+import xyz.arturinsh.gameObjects.PlayerConnection;
 import xyz.arturinsh.packets.Packets.EnterWorld;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;

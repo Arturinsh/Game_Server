@@ -9,9 +9,12 @@ public class BoundingBox {
 
 	public BoundingBox(Point _center, Point... _points) {
 		this.center = _center;
-
+		points.add(center);
 		for (Point point : _points) {
-			points.add(point);
+			Point tempPoint = new Point();
+			tempPoint.x = center.x + point.x;
+			tempPoint.y = center.y + point.y;
+			points.add(tempPoint);
 		}
 	}
 
@@ -20,8 +23,8 @@ public class BoundingBox {
 	}
 
 	public void addAngle(int angle) {
+		double radians = Math.toRadians(angle);
 		for (Point point : points) {
-			double radians = Math.toRadians(angle);
 			float xLength = point.x - center.x;
 			float yLength = point.y - center.y;
 
@@ -31,5 +34,17 @@ public class BoundingBox {
 			point.x += center.x;
 			point.y += center.y;
 		}
+	}
+
+	public ArrayList<Vector2D> getNorm() {
+		ArrayList<Vector2D> normals = new ArrayList<Vector2D>();
+		for (int i = 1; i < points.size() - 1; i++) {
+			Vector2D currentNormal = new Vector2D(points.get(i + 1).x - points.get(i).x,
+					points.get(i + 1).y - points.get(i).y).getNormL();
+			normals.add(currentNormal);
+		}
+		normals.add(new Vector2D(points.get(1).x - points.get(points.size() - 1).x,
+				points.get(1).y - points.get(points.size() - 1).y).getNormL());
+		return normals;
 	}
 }

@@ -17,7 +17,10 @@ import com.esotericsoftware.kryonet.Server;
 import xyz.arturinsh.database.MobSpawn;
 import xyz.arturinsh.gameObjects.Mob;
 import xyz.arturinsh.gameObjects.PlayerConnection;
+import xyz.arturinsh.helpers.BoundingBox;
+import xyz.arturinsh.helpers.Point;
 import xyz.arturinsh.helpers.SessionFactoryUtil;
+import xyz.arturinsh.helpers.Vector2D;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
 
 public class GameWorld {
@@ -59,14 +62,6 @@ public class GameWorld {
 
 	public void update() {
 
-		// float nx = (float)(Math.sin(angle)*40);
-		// float nz = (float)(Math.cos(angle)*40);
-		//
-		//
-		// dog.update();
-		// followCoords();
-		// angle+=0.1;
-
 		List<PlayerConnection> list = new ArrayList<PlayerConnection>();
 
 		for (Connection con : server.getConnections()) {
@@ -79,6 +74,104 @@ public class GameWorld {
 		for (Mob mob : mobs) {
 			mob.update(list);
 		}
+
+		if (list.size() > 1) {
+			ArrayList<Vector2D> normals_box1 = list.get(0).getBoundingBox().getNorm();
+			ArrayList<Vector2D> normals_box2 = list.get(1).getBoundingBox().getNorm();
+
+			ArrayList<Vector2D> vecs_box1 = prepareVector(list.get(0).getBoundingBox());
+			ArrayList<Vector2D> vecs_box2 = prepareVector(list.get(1).getBoundingBox());
+
+			boolean isSeperated = false;
+
+			for (int i = 0; i < normals_box1.size(); i++) {
+				MinMax result_box1 = getMinMax(vecs_box1, normals_box1.get(i));
+				MinMax result_box2 = getMinMax(vecs_box2, normals_box1.get(i));
+
+				isSeperated = result_box1.maxProj < result_box2.minProj || result_box2.maxProj < result_box1.minProj;
+				if (isSeperated)
+					break;
+			}
+			if (!isSeperated) {
+				for (int i = 0; i < normals_box2.size(); i++) {
+					MinMax result_P1 = getMinMax(vecs_box1, normals_box2.get(i));
+					MinMax result_P2 = getMinMax(vecs_box2, normals_box2.get(i));
+					
+					isSeperated = result_P1.maxProj < result_P2.minProj || result_P2.maxProj < result_P1.minProj;
+//					System.out.println(result_P1.maxProj+ "<"+result_P2.minProj +"||"+result_P2.maxProj+"<"+result_P1.minProj);
+					if (isSeperated)
+						break;
+				}
+			}
+			
+//			MinMax result_P1 = getMinMax(vecs_box1, normals_box1.get(1));
+//			MinMax result_P2 = getMinMax(vecs_box2, normals_box1.get(1));
+//			MinMax result_Q1 = getMinMax(vecs_box1, normals_box1.get(0));
+//			MinMax result_Q2 = getMinMax(vecs_box1, normals_box1.get(0));
+//			
+//			MinMax result_R1 = getMinMax(vecs_box1, normals_box2.get(1));
+//			MinMax result_R2 = getMinMax(vecs_box2, normals_box2.get(1));
+//			MinMax result_S1 = getMinMax(vecs_box1, normals_box2.get(0));
+//			MinMax result_S2 = getMinMax(vecs_box1, normals_box2.get(0));
+//			
+//			
+//			boolean seperate_p = result_P1.maxProj < result_P2.minProj || result_P2.maxProj < result_P1.minProj;
+//			boolean seperate_Q = result_Q1.maxProj < result_Q2.minProj || result_Q2.maxProj < result_Q1.minProj;
+//			boolean seperate_R = result_R1.maxProj < result_R2.minProj || result_R2.maxProj < result_R1.minProj;
+//			boolean seperate_S = result_S1.maxProj < result_S2.minProj || result_S2.maxProj < result_S1.minProj;
+//			
+//			isSeperated = seperate_p || seperate_Q || seperate_R || seperate_S;
+			
+			if(isSeperated)
+				System.out.println("Seperated");
+			else
+				System.out.println("Connects");
+		}
+	}
+
+	private ArrayList<Vector2D> prepareVector(BoundingBox box) {
+		ArrayList<Vector2D> vecs_box = new ArrayList<Vector2D>();
+
+		for (int i = 0; i < box.getPoints().size(); i++) {
+			Point corner_box = box.getPoints().get(i);
+			vecs_box.add(new Vector2D(corner_box.x, corner_box.y));
+		}
+
+		return vecs_box;
+	}
+
+	private class MinMax {
+		public float minProj, maxProj;
+		public int minIndex, maxIndex;
+	}
+
+	private MinMax getMinMax(ArrayList<Vector2D> vecs_box, Vector2D axis) {
+		float min_proj_box = vecs_box.get(1).dotProduct(axis);
+		int min_dot_box = 1;
+		float max_proj_box = vecs_box.get(1).dotProduct(axis);
+		int max_dot_box = 1;
+
+		for (int i = 2; i < vecs_box.size(); i++) {
+			float curr_proj = vecs_box.get(i).dotProduct(axis);
+
+			if (min_proj_box > curr_proj) {
+				min_proj_box = curr_proj;
+				min_dot_box = i;
+			}
+			if (curr_proj > max_proj_box) {
+				max_proj_box = curr_proj;
+				max_dot_box = i;
+			}
+
+		}
+
+		MinMax result = new MinMax();
+		result.minProj = min_proj_box;
+		result.maxProj = max_proj_box;
+		result.minIndex = min_dot_box;
+		result.maxIndex = max_dot_box;
+
+		return result;
 	}
 
 	public void playerUpdate(PlayerPositionUpdate update, PlayerConnection playerConnection) {

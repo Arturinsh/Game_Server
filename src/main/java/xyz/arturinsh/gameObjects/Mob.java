@@ -12,6 +12,7 @@ public class Mob {
 	public float destX, destY, destZ;
 	public float startX, startY, startZ;
 	public float defenseRadius = 20;
+	public float closeRadius = 5;
 	public long Id;
 
 	private boolean move = false;
@@ -35,15 +36,34 @@ public class Mob {
 		this.z = z;
 	}
 
-	public void move(float nx, float ny, float nz) {
+	public void move(float nx, float ny, float nz, boolean toAttack) {
 		startX = x;
 		startY = 0;
 		startZ = z;
-		destX = nx;
-		destY = 0;
-		destZ = nz;
 
-		calculateRotation(destX, destZ);
+		calculateRotation(nx, nz);
+		// System.out.println("Dx=" + nx + "Dz=" + nz + "R=" + r);
+		float ln = length(x, y, z, nx, ny, nz);
+//		System.out.println(ln);
+		if (toAttack) {
+			if (ln > closeRadius) {
+				float reverseRot = this.r + 180;
+				float rotToRadians = (float) Math.toRadians(reverseRot);
+				float xOffset = (float) (closeRadius * Math.sin(rotToRadians));
+				float zOffset = (float) (closeRadius * Math.cos(rotToRadians));
+				float px = nx + xOffset;
+				float pz = nz + zOffset;
+
+				destX = px;
+				destY = 0;
+				destZ = pz;
+			}
+			// System.out.println("Px=" + px + "Pz=" + pz + "R=" + reverseRot);
+		} else {
+			destX = nx;
+			destY = 0;
+			destZ = nz;
+		}
 		move = true;
 	}
 
@@ -62,32 +82,35 @@ public class Mob {
 			if (destinationPlayerName == null) {
 				UserCharacter moveChar = minRangeUserCharacter(ranges);
 				destinationPlayerName = moveChar.charName;
-				move(moveChar.x, moveChar.y, moveChar.z);
+				move(moveChar.x, moveChar.y, moveChar.z, true);
 			} else {
 				UserCharacter moveChar = getCharacterInRanges(ranges, destinationPlayerName);
 				if (moveChar != null) {
-					move(moveChar.x, moveChar.y, moveChar.z);
+					move(moveChar.x, moveChar.y, moveChar.z, true);
 				} else {
 					moveChar = minRangeUserCharacter(ranges);
 					destinationPlayerName = moveChar.charName;
-					move(moveChar.x, moveChar.y, moveChar.z);
+					move(moveChar.x, moveChar.y, moveChar.z, true);
 				}
 			}
-		} else {
-			move(spawnX, spawnY, spawnZ);
+		} else if (spawnX != this.x && spawnY != this.z && spawnZ != this.z) {
+			move(spawnX, spawnY, spawnZ, false);
 		}
 
-		if (move)
-		{
-			this.x += Math.sin(Math.toRadians(r)) * moveSpeed;
-			this.z += Math.cos(Math.toRadians(r)) * moveSpeed;
+		if (move) {
+			float tempX = this.x + (float) Math.sin(Math.toRadians(r)) * moveSpeed;
+			float tempZ = this.z + (float) Math.cos(Math.toRadians(r)) * moveSpeed;
 
-			if (pointOnLine(x, y, z)) {
+			if (pointOnLine(tempX, y, tempZ)) {
 				this.x = destX;
 				this.y = destY;
 				this.z = destZ;
 				move = false;
+			} else {
+				this.x = tempX;
+				this.z = tempZ;
 			}
+
 		}
 	}
 

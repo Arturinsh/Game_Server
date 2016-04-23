@@ -1,10 +1,7 @@
 package xyz.arturinsh.gameserver;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Timer;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,11 +9,11 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Server;
 
-import xyz.arturinsh.database.User;
 import xyz.arturinsh.gameObjects.CharacterClass;
 import xyz.arturinsh.gameObjects.MobType;
 import xyz.arturinsh.gameObjects.PlayerConnection;
 import xyz.arturinsh.packets.Packets.AddPlayer;
+import xyz.arturinsh.packets.Packets.Attack;
 import xyz.arturinsh.packets.Packets.CharacterCreateFailed;
 import xyz.arturinsh.packets.Packets.CharacterCreateSuccess;
 import xyz.arturinsh.packets.Packets.EnterWorld;
@@ -77,6 +74,7 @@ public class Main {
 		kryo.register(MobType.class);
 		kryo.register(MobUpdate.class);
 		kryo.register(SnapShot.class);
+		kryo.register(Attack.class);
 	}
 
 	private static void setLoggersToLogWarning() {

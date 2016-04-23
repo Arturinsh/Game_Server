@@ -21,6 +21,7 @@ import xyz.arturinsh.helpers.BoundingBox;
 import xyz.arturinsh.helpers.Point;
 import xyz.arturinsh.helpers.SessionFactoryUtil;
 import xyz.arturinsh.helpers.Vector2D;
+import xyz.arturinsh.packets.Packets.Attack;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
 
 public class GameWorld {
@@ -28,6 +29,8 @@ public class GameWorld {
 
 	private List<Mob> mobs;
 	private int[][] boundingMap;
+
+	private static List<PlayerConnection> playersInWorld = new ArrayList<PlayerConnection>();;
 
 	public GameWorld(Server server) {
 		this.server = server;
@@ -71,80 +74,47 @@ public class GameWorld {
 			}
 		}
 
+		playersInWorld = list;
+
 		for (Mob mob : mobs) {
-			mob.update(list);
+			mob.update(playersInWorld);
 		}
 
-		if (list.size() > 1) {
-//			ArrayList<Point> test1 = list.get(0).getBoundingBox().getPoints();
-//			ArrayList<Point> test2 = list.get(1).getBoundingBox().getPoints();
-//
-//			System.out.println(
-//					test1.get(0).x + ":" + test1.get(0).y +"First=" + test1.get(1).x + ":" + test1.get(1).y + " " + test1.get(2).x + ":" + test1.get(2).y + " "
-//							+ test1.get(3).x + ":" + test1.get(3).y + " " + test1.get(4).x + ":" + test1.get(4).y);
-//
-//			System.out.println(
-//				 test2.get(0).x + ":" + test2.get(0).y +"Second=" + test2.get(1).x + ":" + test2.get(1).y + " " + test2.get(2).x + ":" + test2.get(2).y + " "
-//							+ test2.get(3).x + ":" + test2.get(3).y + " " + test2.get(4).x + ":" + test2.get(4).y);
+	}
 
-			ArrayList<Vector2D> normals_box1 = list.get(0).getBoundingBox().getNorm();
-			ArrayList<Vector2D> normals_box2 = list.get(1).getBoundingBox().getNorm();
+	private boolean checkBounding(BoundingBox box1, BoundingBox box2) {
 
-			ArrayList<Vector2D> vecs_box1 = prepareVector(list.get(0).getBoundingBox());
-			ArrayList<Vector2D> vecs_box2 = prepareVector(list.get(1).getBoundingBox());
+		ArrayList<Vector2D> normals_box1 = box1.getNorm();
+		ArrayList<Vector2D> normals_box2 = box2.getNorm();
 
-			boolean isSeperated = false;
+		ArrayList<Vector2D> vecs_box1 = prepareVector(box1);
+		ArrayList<Vector2D> vecs_box2 = prepareVector(box2);
 
-			for (int i = 0; i < normals_box1.size(); i++) {
-				MinMax result_box1 = getMinMax(vecs_box1, normals_box1.get(i));
-				MinMax result_box2 = getMinMax(vecs_box2, normals_box1.get(i));
+		boolean isSeperated = false;
 
-				isSeperated = result_box1.maxProj < result_box2.minProj || result_box2.maxProj < result_box1.minProj;
+		for (int i = 0; i < normals_box1.size(); i++) {
+			MinMax result_box1 = getMinMax(vecs_box1, normals_box1.get(i));
+			MinMax result_box2 = getMinMax(vecs_box2, normals_box1.get(i));
+
+			isSeperated = result_box1.maxProj < result_box2.minProj || result_box2.maxProj < result_box1.minProj;
+			if (isSeperated)
+				break;
+		}
+		if (!isSeperated) {
+			for (int i = 0; i < normals_box2.size(); i++) {
+				MinMax result_P1 = getMinMax(vecs_box1, normals_box2.get(i));
+				MinMax result_P2 = getMinMax(vecs_box2, normals_box2.get(i));
+
+				isSeperated = result_P1.maxProj < result_P2.minProj || result_P2.maxProj < result_P1.minProj;
+				// System.out.println(result_P1.maxProj+
+				// "<"+result_P2.minProj
+				// +"||"+result_P2.maxProj+"<"+result_P1.minProj);
 				if (isSeperated)
 					break;
 			}
-			if (!isSeperated) {
-				for (int i = 0; i < normals_box2.size(); i++) {
-					MinMax result_P1 = getMinMax(vecs_box1, normals_box2.get(i));
-					MinMax result_P2 = getMinMax(vecs_box2, normals_box2.get(i));
-
-					isSeperated = result_P1.maxProj < result_P2.minProj || result_P2.maxProj < result_P1.minProj;
-					// System.out.println(result_P1.maxProj+
-					// "<"+result_P2.minProj
-					// +"||"+result_P2.maxProj+"<"+result_P1.minProj);
-					if (isSeperated)
-						break;
-				}
-			}
-
-			// MinMax result_P1 = getMinMax(vecs_box1, normals_box1.get(1));
-			// MinMax result_P2 = getMinMax(vecs_box2, normals_box1.get(1));
-			// MinMax result_Q1 = getMinMax(vecs_box1, normals_box1.get(0));
-			// MinMax result_Q2 = getMinMax(vecs_box1, normals_box1.get(0));
-			//
-			// MinMax result_R1 = getMinMax(vecs_box1, normals_box2.get(1));
-			// MinMax result_R2 = getMinMax(vecs_box2, normals_box2.get(1));
-			// MinMax result_S1 = getMinMax(vecs_box1, normals_box2.get(0));
-			// MinMax result_S2 = getMinMax(vecs_box1, normals_box2.get(0));
-			//
-			//
-			// boolean seperate_p = result_P1.maxProj < result_P2.minProj ||
-			// result_P2.maxProj < result_P1.minProj;
-			// boolean seperate_Q = result_Q1.maxProj < result_Q2.minProj ||
-			// result_Q2.maxProj < result_Q1.minProj;
-			// boolean seperate_R = result_R1.maxProj < result_R2.minProj ||
-			// result_R2.maxProj < result_R1.minProj;
-			// boolean seperate_S = result_S1.maxProj < result_S2.minProj ||
-			// result_S2.maxProj < result_S1.minProj;
-			//
-			// isSeperated = seperate_p || seperate_Q || seperate_R ||
-			// seperate_S;
-
-			if (isSeperated)
-				System.out.println("Seperated");
-			else
-				System.out.println("Connects");
 		}
+
+		return !isSeperated;
 	}
 
 	private ArrayList<Vector2D> prepareVector(BoundingBox box) {
@@ -262,4 +232,19 @@ public class GameWorld {
 		return mobs;
 	}
 
+	public void attack(Attack attack, PlayerConnection playerConnection) {
+		if (attack.character.charName.matches(playerConnection.character.charName)
+				&& attack.character.charClass == playerConnection.character.charClass) {
+			if (playersInWorld.size() > 1) {
+				for (PlayerConnection player : playersInWorld) {
+					if (!player.character.charName.matches(playerConnection.character.charName)) {
+						if (checkBounding(playerConnection.getAttackBox(), player.getBoundingBox())) {
+							System.out.println(
+									player.character.charName + " attacked by " + playerConnection.character.charName);
+						}
+					}
+				}
+			}
+		}
+	}
 }

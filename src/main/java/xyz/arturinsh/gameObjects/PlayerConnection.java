@@ -13,6 +13,8 @@ import xyz.arturinsh.packets.Packets.UserCharacter;
 
 public class PlayerConnection extends Connection {
 
+	private final float ATTACK_CENTER_DISTANCE = 3;
+
 	public User user;
 	public UserCharacter character;
 	public Date lastTimeStamp;
@@ -20,8 +22,25 @@ public class PlayerConnection extends Connection {
 
 	public BoundingBox getBoundingBox() {
 		Point center = new Point(character.x, character.z);
-		BoundingBox box = new BoundingBox(center, new Point(2, 0), new Point(-2, 0), new Point(0, -2), new Point(0, 2));
-		box.addAngle((int)character.r);
+		BoundingBox box = new BoundingBox(center, new Point(2, 1), new Point(2, -1), new Point(-2, -1),
+				new Point(-2, 1));
+		box.addAngle((int) character.r);
+		return box;
+	}
+
+	public BoundingBox getAttackBox() {
+
+		float rotToRadians = (float) Math.toRadians(character.r);
+		float xOffset = (float) (ATTACK_CENTER_DISTANCE * Math.sin(rotToRadians));
+		float zOffset = (float) (ATTACK_CENTER_DISTANCE * Math.cos(rotToRadians));
+
+		float nx = character.x + xOffset;
+		float nz = character.z + zOffset;
+
+		Point center = new Point(nx, nz);
+		BoundingBox box = new BoundingBox(center, new Point(2, 2), new Point(2, -2), new Point(-2, -2),
+				new Point(-2, 2));
+		box.addAngle((int) character.r);
 		return box;
 	}
 

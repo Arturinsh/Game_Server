@@ -9,6 +9,7 @@ import com.esotericsoftware.kryonet.Server;
 
 import xyz.arturinsh.database.User;
 import xyz.arturinsh.gameObjects.PlayerConnection;
+import xyz.arturinsh.packets.Packets.Attack;
 import xyz.arturinsh.packets.Packets.EnterWorld;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
@@ -19,6 +20,7 @@ public class NetworkListener extends Listener {
 	private Server server;
 	private List<User> loggedIn = new ArrayList<User>();
 	private GameWorld world;
+
 	public NetworkListener(Server _server, GameWorld _world) {
 		server = _server;
 		world = _world;
@@ -59,6 +61,10 @@ public class NetworkListener extends Listener {
 				if (object instanceof PlayerPositionUpdate) {
 					PlayerPositionUpdate update = (PlayerPositionUpdate) object;
 					world.playerUpdate(update, playerConnection);
+				}
+				if (object instanceof Attack) {
+					Attack attack = (Attack)object;
+					world.attack(attack, playerConnection);
 				}
 			}
 		});

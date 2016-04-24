@@ -14,6 +14,7 @@ import xyz.arturinsh.gameObjects.MobType;
 import xyz.arturinsh.gameObjects.PlayerConnection;
 import xyz.arturinsh.packets.Packets.AddPlayer;
 import xyz.arturinsh.packets.Packets.Attack;
+import xyz.arturinsh.packets.Packets.AttackStarted;
 import xyz.arturinsh.packets.Packets.CharacterCreateFailed;
 import xyz.arturinsh.packets.Packets.CharacterCreateSuccess;
 import xyz.arturinsh.packets.Packets.EnterWorld;
@@ -75,6 +76,7 @@ public class Main {
 		kryo.register(MobUpdate.class);
 		kryo.register(SnapShot.class);
 		kryo.register(Attack.class);
+		kryo.register(AttackStarted.class);
 	}
 
 	private static void setLoggersToLogWarning() {

@@ -4,7 +4,10 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -22,6 +25,7 @@ import xyz.arturinsh.helpers.Point;
 import xyz.arturinsh.helpers.SessionFactoryUtil;
 import xyz.arturinsh.helpers.Vector2D;
 import xyz.arturinsh.packets.Packets.Attack;
+import xyz.arturinsh.packets.Packets.AttackStarted;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
 
 public class GameWorld {
@@ -65,6 +69,16 @@ public class GameWorld {
 
 	public void update() {
 
+		updatePlayerWorldList();
+
+		for (Mob mob : mobs) {
+			mob.update(playersInWorld);
+		}
+
+	}
+
+	private void updatePlayerWorldList() {
+
 		List<PlayerConnection> list = new ArrayList<PlayerConnection>();
 
 		for (Connection con : server.getConnections()) {
@@ -75,11 +89,6 @@ public class GameWorld {
 		}
 
 		playersInWorld = list;
-
-		for (Mob mob : mobs) {
-			mob.update(playersInWorld);
-		}
-
 	}
 
 	private boolean checkBounding(BoundingBox box1, BoundingBox box2) {
@@ -232,19 +241,47 @@ public class GameWorld {
 		return mobs;
 	}
 
-	public void attack(Attack attack, PlayerConnection playerConnection) {
+	public void attack(final Attack attack, final PlayerConnection playerConnection) {
 		if (attack.character.charName.matches(playerConnection.character.charName)
 				&& attack.character.charClass == playerConnection.character.charClass) {
-			if (playersInWorld.size() > 1) {
+
+			if (playerConnection.isNewAttack(attack.time)) {
+				AttackStarted startAttack = new AttackStarted();
+				startAttack.character = attack.character;
+
+				updatePlayerWorldList();
 				for (PlayerConnection player : playersInWorld) {
-					if (!player.character.charName.matches(playerConnection.character.charName)) {
-						if (checkBounding(playerConnection.getAttackBox(), player.getBoundingBox())) {
-							System.out.println(
-									player.character.charName + " attacked by " + playerConnection.character.charName);
-						}
+					player.sendTCP(startAttack);
+				}
+				System.out.println("attack");
+			}
+			new java.util.Timer().schedule(new java.util.TimerTask() {
+				@Override
+				public void run() {
+					executeAttack(attack, playerConnection);
+				}
+			}, 1050);
+		}
+	}
+
+	private void executeAttack(Attack attack, PlayerConnection playerConnection) {
+		if (playersInWorld.size() > 1) {
+			for (PlayerConnection player : playersInWorld) {
+				if (!player.character.charName.matches(playerConnection.character.charName)) {
+					if (checkBounding(playerConnection.getAttackBox(), player.getBoundingBox())) {
+						System.out.println(
+								player.character.charName + " attacked by " + playerConnection.character.charName);
+
 					}
 				}
 			}
 		}
+		playerConnection.attackEnded();
+	}
+
+	private void printTime() {
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSSS");
+		Date date = new Date();
+		System.out.println(dateFormat.format(date));
 	}
 }

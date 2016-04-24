@@ -1,6 +1,9 @@
 package xyz.arturinsh.gameserver;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.esotericsoftware.kryonet.Connection;
@@ -10,6 +13,7 @@ import com.esotericsoftware.kryonet.Server;
 import xyz.arturinsh.database.User;
 import xyz.arturinsh.gameObjects.PlayerConnection;
 import xyz.arturinsh.packets.Packets.Attack;
+import xyz.arturinsh.packets.Packets.AttackStarted;
 import xyz.arturinsh.packets.Packets.EnterWorld;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
@@ -63,10 +67,17 @@ public class NetworkListener extends Listener {
 					world.playerUpdate(update, playerConnection);
 				}
 				if (object instanceof Attack) {
-					Attack attack = (Attack)object;
+					final Attack attack = (Attack) object;
 					world.attack(attack, playerConnection);
+					
 				}
 			}
 		});
+	}
+
+	private void printTime() {
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSSS");
+		Date date = new Date();
+		System.out.println(dateFormat.format(date));
 	}
 }

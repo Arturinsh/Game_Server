@@ -1,6 +1,8 @@
 package xyz.arturinsh.gameObjects;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,6 +21,9 @@ public class PlayerConnection extends Connection {
 	public UserCharacter character;
 	public Date lastTimeStamp;
 	private ExecutorService tasks = Executors.newSingleThreadExecutor();
+	private List<Date> attackTimes = new ArrayList<Date>();
+
+	private boolean attacking = false;
 
 	public BoundingBox getBoundingBox() {
 		Point center = new Point(character.x, character.z);
@@ -42,6 +47,33 @@ public class PlayerConnection extends Connection {
 				new Point(-2, 2));
 		box.addAngle((int) character.r);
 		return box;
+	}
+
+	private void addAttack(Date attackDate) {
+		attackTimes.add(attackDate);
+		attacking = true;
+		System.out.println(character.charName + " attack count=" + attackTimes.size());
+		if (attackTimes.size() > 100) {
+			for (int i = 0; i < 50; i++) {
+				attackTimes.remove(0);
+			}
+		}
+	}
+
+	public boolean isNewAttack(Date attackDate) {
+		if (!attacking) {
+			for (Date date : attackTimes) {
+				if (date.getTime() == attackDate.getTime())
+					return false;
+			}
+			addAttack(attackDate);
+			return true;
+		}
+		return false;
+	}
+	
+	public void attackEnded(){
+		attacking = false;
 	}
 
 	public void addTask(Runnable newTask) {

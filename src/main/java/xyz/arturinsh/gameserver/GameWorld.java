@@ -179,19 +179,21 @@ public class GameWorld {
 					|| playerConnection.lastTimeStamp.getTime() < update.timestamp.getTime()) {
 
 				if (update.character.x < 0)
-					playerConnection.character.x = 0;
+					update.character.x = 0;
 				else if (update.character.x > 1024)
-					playerConnection.character.x = 1024;
-				else if (boundingMap[(int) update.character.x][(int) update.character.z] == 1)
+					update.character.x = 1024;
+
+				if (update.character.z < 0)
+					update.character.z = 0;
+				else if (update.character.z > 1024)
+					update.character.z = 1024;
+
+				if (boundingMap[(int) update.character.x][(int) update.character.z] == 1)
 					playerConnection.character.x = update.character.x;
 				else
 					playerConnection.character.x = playerConnection.character.x;
 
-				if (update.character.z < 0)
-					playerConnection.character.z = 0;
-				else if (update.character.z > 1024)
-					playerConnection.character.z = 1024;
-				else if (boundingMap[(int) update.character.x][(int) update.character.z] == 1)
+				if (boundingMap[(int) update.character.x][(int) update.character.z] == 1)
 					playerConnection.character.z = update.character.z;
 				else
 					playerConnection.character.z = playerConnection.character.z;

@@ -69,7 +69,6 @@ public class NetworkListener extends Listener {
 				if (object instanceof Attack) {
 					final Attack attack = (Attack) object;
 					world.attack(attack, playerConnection);
-					
 				}
 			}
 		});

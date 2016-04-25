@@ -52,7 +52,6 @@ public class PlayerConnection extends Connection {
 	private void addAttack(Date attackDate) {
 		attackTimes.add(attackDate);
 		attacking = true;
-		System.out.println(character.charName + " attack count=" + attackTimes.size());
 		if (attackTimes.size() > 100) {
 			for (int i = 0; i < 50; i++) {
 				attackTimes.remove(0);

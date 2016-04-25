@@ -26,6 +26,7 @@ import xyz.arturinsh.helpers.SessionFactoryUtil;
 import xyz.arturinsh.helpers.Vector2D;
 import xyz.arturinsh.packets.Packets.Attack;
 import xyz.arturinsh.packets.Packets.AttackStarted;
+import xyz.arturinsh.packets.Packets.MobAttack;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
 
 public class GameWorld {
@@ -228,7 +229,7 @@ public class GameWorld {
 		List<MobSpawn> list = session.createCriteria(MobSpawn.class).list();
 
 		for (MobSpawn spawn : list) {
-			Mob temp = new Mob(spawn.getX(), spawn.getY(), spawn.getZ());
+			Mob temp = new Mob(spawn.getX(), spawn.getY(), spawn.getZ(), this);
 			temp.type = spawn.getType();
 			temp.Id = spawn.getId();
 			mobs.add(temp);
@@ -253,7 +254,6 @@ public class GameWorld {
 				for (PlayerConnection player : playersInWorld) {
 					player.sendTCP(startAttack);
 				}
-				System.out.println("attack");
 			}
 			new java.util.Timer().schedule(new java.util.TimerTask() {
 				@Override
@@ -276,7 +276,37 @@ public class GameWorld {
 				}
 			}
 		}
+		for (Mob mob : mobs) {
+			if (checkBounding(playerConnection.getAttackBox(), mob.getBoundingBox())) {
+				System.out.println("mob " + mob.Id + " attacked by " + playerConnection.character.charName);
+			}
+		}
 		playerConnection.attackEnded();
+	}
+
+	public void mobAttack(final Mob mob) {
+		MobAttack attack = new MobAttack();
+		attack.mob = mob.getMobUpdateData();
+		for (PlayerConnection player : playersInWorld) {
+			player.sendTCP(attack);
+		}
+		new java.util.Timer().schedule(new java.util.TimerTask() {
+			@Override
+			public void run() {
+				executeMobAttack(mob);
+			}
+		}, 1000);
+	}
+
+	private void executeMobAttack(Mob mob) {
+		if (playersInWorld.size() > 0) {
+			for (PlayerConnection player : playersInWorld) {
+				if (checkBounding(mob.getAttackBox(), player.getBoundingBox())) {
+					System.out.println(player.character.charName + " attacked by mob " + mob.Id);
+				}
+			}
+		}
+		mob.attackEnded();
 	}
 
 	private void printTime() {

@@ -81,4 +81,8 @@ public class Packets {
 	public static class AttackStarted{
 		public UserCharacter character;
 	}
+	
+	public static class MobAttack{
+		public MobUpdate mob;
+	}
 }

@@ -21,6 +21,7 @@ import xyz.arturinsh.packets.Packets.EnterWorld;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.LogInFailed;
 import xyz.arturinsh.packets.Packets.LogInSuccess;
+import xyz.arturinsh.packets.Packets.MobAttack;
 import xyz.arturinsh.packets.Packets.MobUpdate;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
 import xyz.arturinsh.packets.Packets.Register;
@@ -77,6 +78,7 @@ public class Main {
 		kryo.register(SnapShot.class);
 		kryo.register(Attack.class);
 		kryo.register(AttackStarted.class);
+		kryo.register(MobAttack.class);
 	}
 
 	private static void setLoggersToLogWarning() {

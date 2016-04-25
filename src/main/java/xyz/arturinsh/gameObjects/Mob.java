@@ -3,10 +3,16 @@ package xyz.arturinsh.gameObjects;
 import java.util.ArrayList;
 import java.util.List;
 
+import xyz.arturinsh.gameserver.GameWorld;
+import xyz.arturinsh.helpers.BoundingBox;
+import xyz.arturinsh.helpers.Point;
 import xyz.arturinsh.packets.Packets.MobUpdate;
 import xyz.arturinsh.packets.Packets.UserCharacter;
 
 public class Mob {
+	private final float ATTACK_CENTER_DISTANCE = 3.5f;
+
+	
 	public float x, y, z, r;
 	public float moveSpeed = 0.5f;
 	public float destX, destY, destZ;
@@ -15,18 +21,20 @@ public class Mob {
 	public float closeRadius = 5;
 	public long Id;
 
-	private boolean move = false;
+	private boolean move = false, attacking = false;
 
 	public MobType type;
 
 	private float spawnX, spawnY, spawnZ;
 
 	private String destinationPlayerName = null;
+	private GameWorld world;
 
-	public Mob(float _spawnX, float _spawnY, float _spawnZ) {
+	public Mob(float _spawnX, float _spawnY, float _spawnZ, GameWorld _world) {
 		this.spawnX = _spawnX;
 		this.spawnY = _spawnY;
 		this.spawnZ = _spawnZ;
+		this.world = _world;
 		setPosition(spawnX, spawnY, spawnZ);
 	}
 
@@ -41,10 +49,11 @@ public class Mob {
 		startY = 0;
 		startZ = z;
 
-		calculateRotation(nx, nz);
+		if (!attacking)
+			calculateRotation(nx, nz);
 		// System.out.println("Dx=" + nx + "Dz=" + nz + "R=" + r);
 		float ln = length(x, y, z, nx, ny, nz);
-//		System.out.println(ln);
+		// System.out.println(ln);
 		if (toAttack) {
 			if (ln > closeRadius) {
 				float reverseRot = this.r + 180;
@@ -77,27 +86,28 @@ public class Mob {
 				ranges.add(new PlayerRange(distanceToMob, player.character));
 			}
 		}
-
+		boolean agressive = false;
 		if (ranges.size() > 0) {
+			agressive = true;
 			if (destinationPlayerName == null) {
 				UserCharacter moveChar = minRangeUserCharacter(ranges);
 				destinationPlayerName = moveChar.charName;
-				move(moveChar.x, moveChar.y, moveChar.z, true);
+				move(moveChar.x, moveChar.y, moveChar.z, agressive);
 			} else {
 				UserCharacter moveChar = getCharacterInRanges(ranges, destinationPlayerName);
 				if (moveChar != null) {
-					move(moveChar.x, moveChar.y, moveChar.z, true);
+					move(moveChar.x, moveChar.y, moveChar.z, agressive);
 				} else {
 					moveChar = minRangeUserCharacter(ranges);
 					destinationPlayerName = moveChar.charName;
-					move(moveChar.x, moveChar.y, moveChar.z, true);
+					move(moveChar.x, moveChar.y, moveChar.z, agressive);
 				}
 			}
 		} else if (spawnX != this.x && spawnY != this.z && spawnZ != this.z) {
-			move(spawnX, spawnY, spawnZ, false);
+			move(spawnX, spawnY, spawnZ, agressive);
 		}
 
-		if (move) {
+		if (move && !attacking) {
 			float tempX = this.x + (float) Math.sin(Math.toRadians(r)) * moveSpeed;
 			float tempZ = this.z + (float) Math.cos(Math.toRadians(r)) * moveSpeed;
 
@@ -112,6 +122,11 @@ public class Mob {
 			}
 
 		}
+		if (!move && agressive) {
+			attacking = true;
+			world.mobAttack(this);
+		}
+
 	}
 
 	private UserCharacter getCharacterInRanges(List<PlayerRange> list, String charName) {
@@ -167,6 +182,33 @@ public class Mob {
 		update.r = r;
 		update.ID = Id;
 		return update;
+	}
+
+	public void attackEnded() {
+		attacking = false;
+	}
+
+	public BoundingBox getBoundingBox() {
+		Point center2 = new Point(x, z);
+		BoundingBox box2 = new BoundingBox(center2, new Point(1, 2), new Point(1, -2), new Point(-1, -2),
+				new Point(-1, 2));
+		box2.addAngle((int) r);
+		return box2;
+	}
+
+	public BoundingBox getAttackBox(){
+		float rotToRadians = (float) Math.toRadians(r);
+		float xOffset = (float) (ATTACK_CENTER_DISTANCE * Math.sin(rotToRadians));
+		float zOffset = (float) (ATTACK_CENTER_DISTANCE * Math.cos(rotToRadians));
+
+		float nx = x + xOffset;
+		float nz = z + zOffset;
+
+		Point center = new Point(nx, nz);
+		BoundingBox box = new BoundingBox(center, new Point(2, 3.5f), new Point(2, -3.5f), new Point(-2, -3.5f),
+				new Point(-2, 3.5f));
+		box.addAngle((int) r);
+		return box;
 	}
 
 	private float length(float x, float y, float z, float nx, float ny, float nz) {

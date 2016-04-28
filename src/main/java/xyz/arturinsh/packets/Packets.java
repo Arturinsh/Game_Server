@@ -42,6 +42,7 @@ public class Packets {
 		public String charName;
 		public CharacterClass charClass;
 		public float x, y, z, r;
+		public int hp;
 	}
 
 	public static class CharacterCreateSuccess {
@@ -66,6 +67,7 @@ public class Packets {
 		public long ID;
 		public float x,y,z,r;
 		public MobType type;
+		public int hp;
 	}
 
 	public static class SnapShot {

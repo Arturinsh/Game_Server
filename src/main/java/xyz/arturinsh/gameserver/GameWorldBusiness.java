@@ -34,7 +34,7 @@ public class GameWorldBusiness {
 			enter.character.r = character.getR();
 
 			player.character = enter.character;
-
+			player.character.hp = 100;
 			EnterWorld success = new EnterWorld();
 			success.character = player.character;
 			player.sendTCP(success);

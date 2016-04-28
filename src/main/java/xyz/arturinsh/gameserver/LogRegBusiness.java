@@ -66,7 +66,7 @@ public class LogRegBusiness {
 				}
 				User loginUser = users.get(0);
 				loginUser.getCharacters().size();
-
+				session.close();
 				return loginUser;
 			}
 		}

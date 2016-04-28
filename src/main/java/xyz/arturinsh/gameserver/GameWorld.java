@@ -273,17 +273,19 @@ public class GameWorld {
 			for (PlayerConnection player : playersInWorld) {
 				if (!player.character.charName.matches(playerConnection.character.charName)) {
 					if (checkBounding(playerConnection.getAttackBox(), player.getBoundingBox())) {
+						player.character.hp -= playerConnection.attack;
 						System.out.println(
 								player.character.charName + " attacked by " + playerConnection.character.charName);
-
 					}
 				}
 			}
 		}
 		for (Mob mob : mobs) {
-			if (checkBounding(playerConnection.getAttackBox(), mob.getBoundingBox())) {
-				System.out.println("mob " + mob.Id + " attacked by " + playerConnection.character.charName);
-			}
+			if (mob.isAlive())
+				if (checkBounding(playerConnection.getAttackBox(), mob.getBoundingBox())) {
+					mob.hp -= playerConnection.attack;
+					System.out.println("mob " + mob.Id + " attacked by " + playerConnection.character.charName);
+				}
 		}
 		playerConnection.attackEnded();
 	}
@@ -306,6 +308,7 @@ public class GameWorld {
 		if (playersInWorld.size() > 0) {
 			for (PlayerConnection player : playersInWorld) {
 				if (checkBounding(mob.getAttackBox(), player.getBoundingBox())) {
+					player.character.hp -= mob.attack;
 					System.out.println(player.character.charName + " attacked by mob " + mob.Id);
 				}
 			}

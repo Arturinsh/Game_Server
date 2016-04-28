@@ -59,7 +59,7 @@ public class GameUpdate extends TimerTask {
 
 		snapShot.mobSnapshot = new ArrayList<MobUpdate>();
 		for (Mob mob : mobs) {
-			snapShot.mobSnapshot.add(mob.getMobUpdateData());
+				snapShot.mobSnapshot.add(mob.getMobUpdateData());
 		}
 
 		snapShot.time = new Date();

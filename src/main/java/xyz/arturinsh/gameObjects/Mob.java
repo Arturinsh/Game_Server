@@ -1,6 +1,7 @@
 package xyz.arturinsh.gameObjects;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import xyz.arturinsh.gameserver.GameWorld;
@@ -12,7 +13,6 @@ import xyz.arturinsh.packets.Packets.UserCharacter;
 public class Mob {
 	private final float ATTACK_CENTER_DISTANCE = 3.5f;
 
-	
 	public float x, y, z, r;
 	public float moveSpeed = 0.5f;
 	public float destX, destY, destZ;
@@ -20,8 +20,12 @@ public class Mob {
 	public float defenseRadius = 20;
 	public float closeRadius = 5;
 	public long Id;
+	public int hp = 100;
+	public int attack = 10;
 
-	private boolean move = false, attacking = false;
+	private Calendar nextSpawnTime;
+
+	private boolean move = false, attacking = false, dead = false;
 
 	public MobType type;
 
@@ -76,57 +80,76 @@ public class Mob {
 		move = true;
 	}
 
+	private void reset() {
+		setPosition(spawnX, spawnY, spawnZ);
+		hp = 100;
+		dead = false;
+		destinationPlayerName = null;
+		move = false;
+		attacking = false;
+		System.out.println("reset");
+	}
+
 	public void update(List<PlayerConnection> players) {
-		List<PlayerRange> ranges = new ArrayList<PlayerRange>();
-		for (PlayerConnection player : players) {
-			float distanceToSpawn = length(spawnX, spawnY, spawnZ, player.character.x, player.character.y,
-					player.character.z);
-			if (distanceToSpawn < defenseRadius) {
-				float distanceToMob = length(x, y, z, player.character.x, player.character.y, player.character.z);
-				ranges.add(new PlayerRange(distanceToMob, player.character));
-			}
+
+		if (hp <= 0 && !dead)
+			kill();
+
+		if (dead && Calendar.getInstance().getTimeInMillis() > nextSpawnTime.getTimeInMillis()) {
+			reset();
 		}
-		boolean agressive = false;
-		if (ranges.size() > 0) {
-			agressive = true;
-			if (destinationPlayerName == null) {
-				UserCharacter moveChar = minRangeUserCharacter(ranges);
-				destinationPlayerName = moveChar.charName;
-				move(moveChar.x, moveChar.y, moveChar.z, agressive);
-			} else {
-				UserCharacter moveChar = getCharacterInRanges(ranges, destinationPlayerName);
-				if (moveChar != null) {
-					move(moveChar.x, moveChar.y, moveChar.z, agressive);
-				} else {
-					moveChar = minRangeUserCharacter(ranges);
-					destinationPlayerName = moveChar.charName;
-					move(moveChar.x, moveChar.y, moveChar.z, agressive);
+
+		if (!dead) {
+			List<PlayerRange> ranges = new ArrayList<PlayerRange>();
+			for (PlayerConnection player : players) {
+				float distanceToSpawn = length(spawnX, spawnY, spawnZ, player.character.x, player.character.y,
+						player.character.z);
+				if (distanceToSpawn < defenseRadius) {
+					float distanceToMob = length(x, y, z, player.character.x, player.character.y, player.character.z);
+					ranges.add(new PlayerRange(distanceToMob, player.character));
 				}
 			}
-		} else if (spawnX != this.x && spawnY != this.z && spawnZ != this.z) {
-			move(spawnX, spawnY, spawnZ, agressive);
-		}
-
-		if (move && !attacking) {
-			float tempX = this.x + (float) Math.sin(Math.toRadians(r)) * moveSpeed;
-			float tempZ = this.z + (float) Math.cos(Math.toRadians(r)) * moveSpeed;
-
-			if (pointOnLine(tempX, y, tempZ)) {
-				this.x = destX;
-				this.y = destY;
-				this.z = destZ;
-				move = false;
-			} else {
-				this.x = tempX;
-				this.z = tempZ;
+			boolean agressive = false;
+			if (ranges.size() > 0) {
+				agressive = true;
+				if (destinationPlayerName == null) {
+					UserCharacter moveChar = minRangeUserCharacter(ranges);
+					destinationPlayerName = moveChar.charName;
+					move(moveChar.x, moveChar.y, moveChar.z, agressive);
+				} else {
+					UserCharacter moveChar = getCharacterInRanges(ranges, destinationPlayerName);
+					if (moveChar != null) {
+						move(moveChar.x, moveChar.y, moveChar.z, agressive);
+					} else {
+						moveChar = minRangeUserCharacter(ranges);
+						destinationPlayerName = moveChar.charName;
+						move(moveChar.x, moveChar.y, moveChar.z, agressive);
+					}
+				}
+			} else if (spawnX != this.x && spawnY != this.z && spawnZ != this.z) {
+				move(spawnX, spawnY, spawnZ, agressive);
 			}
 
-		}
-		if (!move && agressive) {
-			attacking = true;
-			world.mobAttack(this);
-		}
+			if (move && !attacking) {
+				float tempX = this.x + (float) Math.sin(Math.toRadians(r)) * moveSpeed;
+				float tempZ = this.z + (float) Math.cos(Math.toRadians(r)) * moveSpeed;
 
+				if (pointOnLine(tempX, y, tempZ)) {
+					this.x = destX;
+					this.y = destY;
+					this.z = destZ;
+					move = false;
+				} else {
+					this.x = tempX;
+					this.z = tempZ;
+				}
+
+			}
+			if (!move && agressive) {
+				attacking = true;
+				world.mobAttack(this);
+			}
+		}
 	}
 
 	private UserCharacter getCharacterInRanges(List<PlayerRange> list, String charName) {
@@ -181,6 +204,7 @@ public class Mob {
 		update.z = z;
 		update.r = r;
 		update.ID = Id;
+		update.hp = hp;
 		return update;
 	}
 
@@ -196,7 +220,7 @@ public class Mob {
 		return box2;
 	}
 
-	public BoundingBox getAttackBox(){
+	public BoundingBox getAttackBox() {
 		float rotToRadians = (float) Math.toRadians(r);
 		float xOffset = (float) (ATTACK_CENTER_DISTANCE * Math.sin(rotToRadians));
 		float zOffset = (float) (ATTACK_CENTER_DISTANCE * Math.cos(rotToRadians));
@@ -209,6 +233,17 @@ public class Mob {
 				new Point(-2, 3.5f));
 		box.addAngle((int) r);
 		return box;
+	}
+
+	public void kill() {
+		System.out.println("dead");
+		dead = true;
+		nextSpawnTime = Calendar.getInstance();
+		nextSpawnTime.add(Calendar.SECOND, 5);
+	}
+
+	public boolean isAlive() {
+		return !dead;
 	}
 
 	private float length(float x, float y, float z, float nx, float ny, float nz) {

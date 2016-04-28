@@ -21,9 +21,9 @@ public class PlayerConnection extends Connection {
 	public UserCharacter character;
 	public Date lastTimeStamp;
 	public long tick;
+	public int attack = 20;
 	private ExecutorService tasks = Executors.newSingleThreadExecutor();
 	private List<Date> attackTimes = new ArrayList<Date>();
-
 	private boolean attacking = false;
 
 	public BoundingBox getBoundingBox() {

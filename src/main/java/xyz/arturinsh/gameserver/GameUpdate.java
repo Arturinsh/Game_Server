@@ -65,7 +65,7 @@ public class GameUpdate extends TimerTask {
 		snapShot.time = new Date();
 		snapShot.tick = world.getTick();
 		for (PlayerConnection player : characters) {
-			player.sendUDP(snapShot);
+			player.sendTCP(snapShot);
 		}
 		world.addTick();
 	}

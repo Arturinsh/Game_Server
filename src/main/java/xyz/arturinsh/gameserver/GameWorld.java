@@ -35,11 +35,12 @@ public class GameWorld {
 	private List<Mob> mobs;
 	private int[][] boundingMap;
 
+	private long tick = 0;
+
 	private static List<PlayerConnection> playersInWorld = new ArrayList<PlayerConnection>();;
 
 	public GameWorld(Server server) {
 		this.server = server;
-		// this.dog = new Dog();
 		initMobs();
 		initMapBounds();
 	}
@@ -201,6 +202,7 @@ public class GameWorld {
 				playerConnection.character.y = update.character.y;
 				playerConnection.character.r = update.character.r;
 				playerConnection.lastTimeStamp = update.timestamp;
+				playerConnection.tick++;
 			}
 		}
 	}
@@ -315,5 +317,13 @@ public class GameWorld {
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SSSS");
 		Date date = new Date();
 		System.out.println(dateFormat.format(date));
+	}
+
+	public void addTick() {
+		this.tick = tick + 1;
+	}
+
+	public long getTick() {
+		return tick;
 	}
 }

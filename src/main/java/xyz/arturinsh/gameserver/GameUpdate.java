@@ -53,6 +53,7 @@ public class GameUpdate extends TimerTask {
 			update.character.z = player.character.z;
 			update.character.r = player.character.r;
 			update.timestamp = player.lastTimeStamp;
+			update.tick = player.tick;
 			snapShot.snapshot.add(update);
 		}
 
@@ -62,9 +63,11 @@ public class GameUpdate extends TimerTask {
 		}
 
 		snapShot.time = new Date();
+		snapShot.tick = world.getTick();
 		for (PlayerConnection player : characters) {
 			player.sendUDP(snapShot);
 		}
+		world.addTick();
 	}
 
 }

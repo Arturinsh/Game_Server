@@ -20,6 +20,7 @@ public class PlayerConnection extends Connection {
 	public User user;
 	public UserCharacter character;
 	public Date lastTimeStamp;
+	public long tick;
 	private ExecutorService tasks = Executors.newSingleThreadExecutor();
 	private List<Date> attackTimes = new ArrayList<Date>();
 

@@ -178,29 +178,30 @@ public class GameWorld {
 				&& update.character.charClass == playerConnection.character.charClass) {
 			if (playerConnection.lastTimeStamp == null
 					|| playerConnection.lastTimeStamp.getTime() < update.timestamp.getTime()) {
+				if (playerConnection.character.hp > 0) {
+					if (update.character.x < 0)
+						update.character.x = 0;
+					else if (update.character.x > 1024)
+						update.character.x = 1024;
 
-				if (update.character.x < 0)
-					update.character.x = 0;
-				else if (update.character.x > 1024)
-					update.character.x = 1024;
+					if (update.character.z < 0)
+						update.character.z = 0;
+					else if (update.character.z > 1024)
+						update.character.z = 1024;
 
-				if (update.character.z < 0)
-					update.character.z = 0;
-				else if (update.character.z > 1024)
-					update.character.z = 1024;
+					if (boundingMap[(int) update.character.x][(int) update.character.z] == 1)
+						playerConnection.character.x = update.character.x;
+					else
+						playerConnection.character.x = playerConnection.character.x;
 
-				if (boundingMap[(int) update.character.x][(int) update.character.z] == 1)
-					playerConnection.character.x = update.character.x;
-				else
-					playerConnection.character.x = playerConnection.character.x;
+					if (boundingMap[(int) update.character.x][(int) update.character.z] == 1)
+						playerConnection.character.z = update.character.z;
+					else
+						playerConnection.character.z = playerConnection.character.z;
 
-				if (boundingMap[(int) update.character.x][(int) update.character.z] == 1)
-					playerConnection.character.z = update.character.z;
-				else
-					playerConnection.character.z = playerConnection.character.z;
-
-				playerConnection.character.y = update.character.y;
-				playerConnection.character.r = update.character.r;
+					playerConnection.character.y = update.character.y;
+					playerConnection.character.r = update.character.r;
+				}
 				playerConnection.lastTimeStamp = update.timestamp;
 				playerConnection.tick++;
 			}
@@ -272,11 +273,12 @@ public class GameWorld {
 		if (playersInWorld.size() > 1) {
 			for (PlayerConnection player : playersInWorld) {
 				if (!player.character.charName.matches(playerConnection.character.charName)) {
-					if (checkBounding(playerConnection.getAttackBox(), player.getBoundingBox())) {
-						player.character.hp -= playerConnection.attack;
-						System.out.println(
-								player.character.charName + " attacked by " + playerConnection.character.charName);
-					}
+					if (player.character.hp > 0)
+						if (checkBounding(playerConnection.getAttackBox(), player.getBoundingBox())) {
+							player.character.hp -= playerConnection.attack;
+							System.out.println(
+									player.character.charName + " attacked by " + playerConnection.character.charName);
+						}
 				}
 			}
 		}

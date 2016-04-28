@@ -102,11 +102,14 @@ public class Mob {
 		if (!dead) {
 			List<PlayerRange> ranges = new ArrayList<PlayerRange>();
 			for (PlayerConnection player : players) {
-				float distanceToSpawn = length(spawnX, spawnY, spawnZ, player.character.x, player.character.y,
-						player.character.z);
-				if (distanceToSpawn < defenseRadius) {
-					float distanceToMob = length(x, y, z, player.character.x, player.character.y, player.character.z);
-					ranges.add(new PlayerRange(distanceToMob, player.character));
+				if (player.character.hp > 0) {
+					float distanceToSpawn = length(spawnX, spawnY, spawnZ, player.character.x, player.character.y,
+							player.character.z);
+					if (distanceToSpawn < defenseRadius) {
+						float distanceToMob = length(x, y, z, player.character.x, player.character.y,
+								player.character.z);
+						ranges.add(new PlayerRange(distanceToMob, player.character));
+					}
 				}
 			}
 			boolean agressive = false;

@@ -50,7 +50,6 @@ public class LogRegBusiness {
 
 		List<User> users = query.list();
 
-		session.close();
 
 		if (userNameOk(login.userName) && pswOk(login.password) && users.size() > 0) {
 			if (users.get(0).getPassword().matches(login.password)) {

@@ -1,6 +1,7 @@
 package xyz.arturinsh.gameObjects;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -11,6 +12,7 @@ import com.esotericsoftware.kryonet.Connection;
 import xyz.arturinsh.database.User;
 import xyz.arturinsh.helpers.BoundingBox;
 import xyz.arturinsh.helpers.Point;
+import xyz.arturinsh.packets.Packets.ServerMessage;
 import xyz.arturinsh.packets.Packets.UserCharacter;
 
 public class PlayerConnection extends Connection {
@@ -24,7 +26,8 @@ public class PlayerConnection extends Connection {
 	public int attack = 20;
 	private ExecutorService tasks = Executors.newSingleThreadExecutor();
 	private List<Date> attackTimes = new ArrayList<Date>();
-	private boolean attacking = false;
+	private boolean attacking = false, dead = false;
+	private Calendar nextSpawnTime;
 
 	public BoundingBox getBoundingBox() {
 		Point center = new Point(character.x, character.z);
@@ -72,11 +75,34 @@ public class PlayerConnection extends Connection {
 		return false;
 	}
 	
+	public void kill(){
+		dead = true;
+		nextSpawnTime = Calendar.getInstance();
+		nextSpawnTime.add(Calendar.SECOND, 5);
+		ServerMessage message = new ServerMessage();
+		message.message = "You will be revived in few seconds!";
+		this.sendTCP(message);
+	}
+	
 	public void attackEnded(){
 		attacking = false;
 	}
 
 	public void addTask(Runnable newTask) {
 		tasks.execute(newTask);
+	}
+
+	public void update() {
+		if(character.hp<=0 && !dead)
+			kill();
+		
+		if (dead && Calendar.getInstance().getTimeInMillis() > nextSpawnTime.getTimeInMillis()) {
+			reset();
+		}
+	}
+	
+	public void reset(){
+		character.hp = 100;
+		dead = false;
 	}
 }

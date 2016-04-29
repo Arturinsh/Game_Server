@@ -87,7 +87,6 @@ public class Mob {
 		destinationPlayerName = null;
 		move = false;
 		attacking = false;
-		System.out.println("reset");
 	}
 
 	public void update(List<PlayerConnection> players) {
@@ -239,7 +238,6 @@ public class Mob {
 	}
 
 	public void kill() {
-		System.out.println("dead");
 		dead = true;
 		nextSpawnTime = Calendar.getInstance();
 		nextSpawnTime.add(Calendar.SECOND, 5);

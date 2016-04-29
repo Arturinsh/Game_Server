@@ -310,8 +310,10 @@ public class GameWorld {
 		if (playersInWorld.size() > 0) {
 			for (PlayerConnection player : playersInWorld) {
 				if (checkBounding(mob.getAttackBox(), player.getBoundingBox())) {
-					player.character.hp -= mob.attack;
-					System.out.println(player.character.charName + " attacked by mob " + mob.Id);
+					if (player.character.hp > 0) {
+						player.character.hp -= mob.attack;
+						System.out.println(player.character.charName + " attacked by mob " + mob.Id);
+					}
 				}
 			}
 		}

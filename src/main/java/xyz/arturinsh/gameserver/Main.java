@@ -28,6 +28,7 @@ import xyz.arturinsh.packets.Packets.Register;
 import xyz.arturinsh.packets.Packets.RegisterFailed;
 import xyz.arturinsh.packets.Packets.RegisterSuccess;
 import xyz.arturinsh.packets.Packets.RemovePlayer;
+import xyz.arturinsh.packets.Packets.ServerMessage;
 import xyz.arturinsh.packets.Packets.SnapShot;
 import xyz.arturinsh.packets.Packets.UserCharacter;
 
@@ -79,6 +80,7 @@ public class Main {
 		kryo.register(Attack.class);
 		kryo.register(AttackStarted.class);
 		kryo.register(MobAttack.class);
+		kryo.register(ServerMessage.class);
 	}
 
 	private static void setLoggersToLogWarning() {
@@ -88,5 +90,4 @@ public class Main {
 		System.setProperty("com.mchange.v2.log.MLog", "com.mchange.v2.log.FallbackMLog");
 	}
 
-	
 }

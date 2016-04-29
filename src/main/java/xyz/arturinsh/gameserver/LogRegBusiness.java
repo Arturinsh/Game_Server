@@ -50,17 +50,16 @@ public class LogRegBusiness {
 
 		List<User> users = query.list();
 
-
 		if (userNameOk(login.userName) && pswOk(login.password) && users.size() > 0) {
 			if (users.get(0).getPassword().matches(login.password)) {
-				if (isInLoggedIn(login)) {
-					Connection[] conList = server.getConnections();
-					for (Connection con : conList) {
-						PlayerConnection test = (PlayerConnection) con;
-						if (test.user != null) {
-							if (test.user.getUsername().matches(login.userName)) {
-								con.close();
-							}
+				Connection[] conList = server.getConnections();
+				for (Connection con : conList) {
+					PlayerConnection test = (PlayerConnection) con;
+					if (test.user != null) {
+						System.out.println(test.user.getUsername());
+						if (test.user.getUsername().matches(login.userName)) {
+							System.out.println("Matches");
+							con.close();
 						}
 					}
 				}
@@ -74,14 +73,6 @@ public class LogRegBusiness {
 		playerConnection.sendTCP(fail);
 		session.close();
 		return null;
-	}
-
-	private boolean isInLoggedIn(LogIn login) {
-		for (User player : loggedIn) {
-			if (player.getUsername().matches(login.userName))
-				return true;
-		}
-		return false;
 	}
 
 	public void registerUser(PlayerConnection playerConnection, Register newUser) {

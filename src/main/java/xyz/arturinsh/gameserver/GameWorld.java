@@ -238,7 +238,7 @@ public class GameWorld {
 		List<MobSpawn> list = session.createCriteria(MobSpawn.class).list();
 
 		for (MobSpawn spawn : list) {
-			Mob temp = new Mob(spawn.getX(), spawn.getY(), spawn.getZ(), this);
+			Mob temp = new Mob(spawn.getX(), spawn.getY(), spawn.getZ(), spawn.getType(), this);
 			temp.type = spawn.getType();
 			temp.Id = spawn.getId();
 			mobs.add(temp);

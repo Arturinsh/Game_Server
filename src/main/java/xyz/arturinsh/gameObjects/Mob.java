@@ -34,11 +34,12 @@ public class Mob {
 	private String destinationPlayerName = null;
 	private GameWorld world;
 
-	public Mob(float _spawnX, float _spawnY, float _spawnZ, GameWorld _world) {
+	public Mob(float _spawnX, float _spawnY, float _spawnZ, MobType _type, GameWorld _world) {
 		this.spawnX = _spawnX;
 		this.spawnY = _spawnY;
 		this.spawnZ = _spawnZ;
 		this.world = _world;
+		this.type = _type;
 		setPosition(spawnX, spawnY, spawnZ);
 	}
 
@@ -207,6 +208,7 @@ public class Mob {
 		update.r = r;
 		update.ID = Id;
 		update.hp = hp;
+		update.type = type;
 		return update;
 	}
 

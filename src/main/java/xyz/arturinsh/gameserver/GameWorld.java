@@ -30,6 +30,8 @@ import xyz.arturinsh.packets.Packets.MobAttack;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
 
 public class GameWorld {
+	private final float MAXT_TRAVEL_DISTANCE = 3;
+
 	private Server server;
 
 	private List<Mob> mobs;
@@ -178,7 +180,9 @@ public class GameWorld {
 				&& update.character.charClass == playerConnection.character.charClass) {
 			if (playerConnection.lastTimeStamp == null
 					|| playerConnection.lastTimeStamp.getTime() < update.timestamp.getTime()) {
-				if (playerConnection.character.hp > 0) {
+				float travelDistance = length(playerConnection.character.x, playerConnection.character.y,
+						playerConnection.character.z, update.character.x, update.character.y, update.character.z);
+				if (playerConnection.character.hp > 0 && travelDistance <= MAXT_TRAVEL_DISTANCE) {
 					if (update.character.x < 0)
 						update.character.x = 0;
 					else if (update.character.x > 1024)

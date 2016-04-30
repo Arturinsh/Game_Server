@@ -18,7 +18,8 @@ import xyz.arturinsh.packets.Packets.UserCharacter;
 public class PlayerConnection extends Connection {
 
 	private final float ATTACK_CENTER_DISTANCE = 3;
-
+	private final int DEFAULT_HP = 100;
+	
 	public User user;
 	public UserCharacter character;
 	public Date lastTimeStamp;
@@ -102,7 +103,9 @@ public class PlayerConnection extends Connection {
 	}
 	
 	public void reset(){
-		character.hp = 100;
+		character.x = 200;
+		character.z = 200;
+		character.hp = DEFAULT_HP;
 		dead = false;
 	}
 }

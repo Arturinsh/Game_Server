@@ -32,12 +32,14 @@ public class GameWorldBusiness {
 			enter.character.y = character.getY();
 			enter.character.z = character.getZ();
 			enter.character.r = character.getR();
+			enter.character.hp = character.getHP();
+			enter.character.experience = character.getExperience();
 
 			player.character = enter.character;
-			player.character.hp = 100;
 			EnterWorld success = new EnterWorld();
 			success.character = player.character;
 			player.sendTCP(success);
+			System.out.println("hp:"+player.character.hp +" exp:"+player.character.experience);
 
 			AddPlayer ply = new AddPlayer();
 			ply.character = enter.character;
@@ -55,7 +57,8 @@ public class GameWorldBusiness {
 
 			if (dcChar != null) {
 				dcChar.setPosRot(player.character.x, player.character.y, player.character.z, player.character.r);
-
+				dcChar.setExperience(player.character.experience);
+				dcChar.setHP(player.character.hp);
 				session.beginTransaction();
 				session.update(dcChar);
 				session.getTransaction().commit();

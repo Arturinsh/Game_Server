@@ -42,6 +42,12 @@ public class GameCharacter {
 	@Column(name = "R")
 	private float R = 0;
 
+	@Column(name = "Experience")
+	private int Experience = 0;
+	
+	@Column(name ="HP")
+	private int HP = 0;
+
 	public long getId() {
 		return Id;
 	}
@@ -95,6 +101,22 @@ public class GameCharacter {
 		Y = y;
 		Z = z;
 		R = r;
+	}
+
+	public int getExperience() {
+		return Experience;
+	}
+
+	public void setExperience(int experience) {
+		Experience = experience;
+	}
+
+	public int getHP() {
+		return HP;
+	}
+
+	public void setHP(int hP) {
+		HP = hP;
 	}
 
 }

@@ -19,7 +19,7 @@ public class PlayerConnection extends Connection {
 
 	private final float ATTACK_CENTER_DISTANCE = 3;
 	private final int DEFAULT_HP = 100;
-	
+
 	public User user;
 	public UserCharacter character;
 	public Date lastTimeStamp;
@@ -75,8 +75,8 @@ public class PlayerConnection extends Connection {
 		}
 		return false;
 	}
-	
-	public void kill(){
+
+	public void kill() {
 		dead = true;
 		nextSpawnTime = Calendar.getInstance();
 		nextSpawnTime.add(Calendar.SECOND, 5);
@@ -84,8 +84,8 @@ public class PlayerConnection extends Connection {
 		message.message = "You will be revived in few seconds!";
 		this.sendTCP(message);
 	}
-	
-	public void attackEnded(){
+
+	public void attackEnded() {
 		attacking = false;
 	}
 
@@ -94,15 +94,15 @@ public class PlayerConnection extends Connection {
 	}
 
 	public void update() {
-		if(character.hp<=0 && !dead)
+		if (character.hp <= 0 && !dead)
 			kill();
-		
+
 		if (dead && Calendar.getInstance().getTimeInMillis() > nextSpawnTime.getTimeInMillis()) {
 			reset();
 		}
 	}
-	
-	public void reset(){
+
+	public void reset() {
 		character.x = 200;
 		character.z = 200;
 		character.y = 0;

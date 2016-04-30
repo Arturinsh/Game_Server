@@ -117,6 +117,7 @@ public class LogRegBusiness {
 			UserCharacter newChar = new UserCharacter();
 			newChar.charName = usrChar.getCharacterName();
 			newChar.charClass = usrChar.getCharClass();
+			newChar.experience = usrChar.getExperience();
 			characters.add(newChar);
 		}
 		return characters;

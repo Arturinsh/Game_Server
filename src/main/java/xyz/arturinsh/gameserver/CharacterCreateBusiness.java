@@ -38,16 +38,19 @@ public class CharacterCreateBusiness {
 			ch.setCharClass(charClass);
 			User user = playerConnection.user;
 			ch.setUser(user);
+			ch.setPosRot(200, 200, 200, 0);
+			ch.setHP(100);
+			
 			session.beginTransaction();
 			session.save(ch);
 			session.getTransaction().commit();
-			
+
 			Query usrQuery = session.createQuery("FROM User WHERE username =:name");
 			usrQuery.setParameter("name", user.getUsername());
-			
+
 			User updatedUser = (User) usrQuery.list().get(0);
 			playerConnection.user = updatedUser;
-			
+
 			CharacterCreateSuccess success = new CharacterCreateSuccess();
 			success.characters = convertChars(updatedUser);
 			playerConnection.sendTCP(success);
@@ -56,11 +59,11 @@ public class CharacterCreateBusiness {
 		}
 		session.close();
 	}
-	
-	//TODO dublicate of method
+
+	// TODO dublicate of method
 	private List<UserCharacter> convertChars(User user) {
 		List<UserCharacter> characters = new ArrayList<UserCharacter>();
-		
+
 		for (GameCharacter usrChar : user.getCharacters()) {
 			UserCharacter newChar = new UserCharacter();
 			newChar.charName = usrChar.getCharacterName();

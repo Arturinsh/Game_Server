@@ -43,6 +43,7 @@ public class Packets {
 		public CharacterClass charClass;
 		public float x, y, z, r;
 		public int hp;
+		public int experience;
 	}
 
 	public static class CharacterCreateSuccess {

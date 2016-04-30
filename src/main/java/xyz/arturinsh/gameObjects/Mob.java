@@ -26,6 +26,8 @@ public class Mob {
 	public int hp = 100;
 	public int attack = 10;
 	public int attackTime = 1000;
+	public int exp = 10;
+	private int respawnTime = 5;
 
 	private Calendar nextSpawnTime;
 
@@ -54,10 +56,12 @@ public class Mob {
 			defaultHP = 500;
 			hp = defaultHP;
 			attack = 40;
-			attackTime = 5000;
+			attackTime = 2050;
 			attack_center_radius = 11.5f;
 			defenseRadius = 30;
 			closeRadius = 15;
+			exp = 100;
+			respawnTime = 10;
 			break;
 		case DOG:
 			defaultHP = 100;
@@ -67,6 +71,8 @@ public class Mob {
 			attack_center_radius = 3.5f;
 			defenseRadius = 20;
 			closeRadius = 5;
+			exp = 10;
+			respawnTime = 5;
 			break;
 		}
 	}
@@ -120,8 +126,8 @@ public class Mob {
 
 	public void update(List<PlayerConnection> players) {
 
-		if (hp <= 0 && !dead)
-			kill();
+		// if (hp <= 0 && !dead)
+		// kill();
 
 		if (dead && Calendar.getInstance().getTimeInMillis() > nextSpawnTime.getTimeInMillis()) {
 			reset();
@@ -283,7 +289,7 @@ public class Mob {
 	public void kill() {
 		dead = true;
 		nextSpawnTime = Calendar.getInstance();
-		nextSpawnTime.add(Calendar.SECOND, 5);
+		nextSpawnTime.add(Calendar.SECOND, respawnTime);
 	}
 
 	public boolean isAlive() {

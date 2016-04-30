@@ -253,7 +253,8 @@ public class GameWorld {
 
 	public void attack(final Attack attack, final PlayerConnection playerConnection) {
 		if (attack.character.charName.matches(playerConnection.character.charName)
-				&& attack.character.charClass == playerConnection.character.charClass) {
+				&& attack.character.charClass == playerConnection.character.charClass
+				&& playerConnection.character.hp > 0) {
 
 			if (playerConnection.isNewAttack(attack.time)) {
 				AttackStarted startAttack = new AttackStarted();
@@ -280,8 +281,8 @@ public class GameWorld {
 					if (player.character.hp > 0)
 						if (checkBounding(playerConnection.getAttackBox(), player.getBoundingBox())) {
 							player.character.hp -= playerConnection.attack;
-							System.out.println(
-									player.character.charName + " attacked by " + playerConnection.character.charName);
+//							System.out.println(
+//									player.character.charName + " attacked by " + playerConnection.character.charName);
 						}
 				}
 			}
@@ -290,7 +291,11 @@ public class GameWorld {
 			if (mob.isAlive())
 				if (checkBounding(playerConnection.getAttackBox(), mob.getBoundingBox())) {
 					mob.hp -= playerConnection.attack;
-					System.out.println("mob " + mob.Id + " attacked by " + playerConnection.character.charName);
+					if (mob.hp <= 0 && mob.isAlive()) {
+						mob.kill();
+						playerConnection.character.experience += mob.exp;
+					}
+//					System.out.println("mob " + mob.Id + " attacked by " + playerConnection.character.charName);
 				}
 		}
 		playerConnection.attackEnded();

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.swing.ViewportLayout;
+
 import xyz.arturinsh.gameserver.GameWorld;
 import xyz.arturinsh.helpers.BoundingBox;
 import xyz.arturinsh.helpers.Point;
@@ -11,17 +13,19 @@ import xyz.arturinsh.packets.Packets.MobUpdate;
 import xyz.arturinsh.packets.Packets.UserCharacter;
 
 public class Mob {
-	private final float ATTACK_CENTER_DISTANCE = 3.5f;
 
+	public int defaultHP = 100;
 	public float x, y, z, r;
 	public float moveSpeed = 0.5f;
 	public float destX, destY, destZ;
 	public float startX, startY, startZ;
 	public float defenseRadius = 20;
 	public float closeRadius = 5;
+	private float attack_center_radius = 3.5f;
 	public long Id;
 	public int hp = 100;
 	public int attack = 10;
+	public int attackTime = 1000;
 
 	private Calendar nextSpawnTime;
 
@@ -40,7 +44,31 @@ public class Mob {
 		this.spawnZ = _spawnZ;
 		this.world = _world;
 		this.type = _type;
+		setMobType(type);
 		setPosition(spawnX, spawnY, spawnZ);
+	}
+
+	private void setMobType(MobType type) {
+		switch (type) {
+		case VLADINATORS:
+			defaultHP = 500;
+			hp = defaultHP;
+			attack = 40;
+			attackTime = 5000;
+			attack_center_radius = 11.5f;
+			defenseRadius = 30;
+			closeRadius = 15;
+			break;
+		case DOG:
+			defaultHP = 100;
+			hp = defaultHP;
+			attack = 10;
+			attackTime = 1000;
+			attack_center_radius = 3.5f;
+			defenseRadius = 20;
+			closeRadius = 5;
+			break;
+		}
 	}
 
 	public void setPosition(float x, float y, float z) {
@@ -83,7 +111,7 @@ public class Mob {
 
 	private void reset() {
 		setPosition(spawnX, spawnY, spawnZ);
-		hp = 100;
+		hp = defaultHP;
 		dead = false;
 		destinationPlayerName = null;
 		move = false;
@@ -217,24 +245,37 @@ public class Mob {
 	}
 
 	public BoundingBox getBoundingBox() {
-		Point center2 = new Point(x, z);
-		BoundingBox box2 = new BoundingBox(center2, new Point(1, 2), new Point(1, -2), new Point(-1, -2),
-				new Point(-1, 2));
-		box2.addAngle((int) r);
-		return box2;
+		Point center = new Point(x, z);
+		BoundingBox box = null;
+		if (type == MobType.DOG) {
+			box = new BoundingBox(center, new Point(1, 2), new Point(1, -2), new Point(-1, -2), new Point(-1, 2));
+			box.addAngle((int) r);
+		}
+		if (type == MobType.VLADINATORS) {
+			box = new BoundingBox(center, new Point(3, 5), new Point(3, -5), new Point(-3, -5), new Point(-3, 5));
+			box.addAngle((int) r);
+		}
+		return box;
 	}
 
 	public BoundingBox getAttackBox() {
 		float rotToRadians = (float) Math.toRadians(r);
-		float xOffset = (float) (ATTACK_CENTER_DISTANCE * Math.sin(rotToRadians));
-		float zOffset = (float) (ATTACK_CENTER_DISTANCE * Math.cos(rotToRadians));
+		float xOffset = (float) (attack_center_radius * Math.sin(rotToRadians));
+		float zOffset = (float) (attack_center_radius * Math.cos(rotToRadians));
 
 		float nx = x + xOffset;
 		float nz = z + zOffset;
 
 		Point center = new Point(nx, nz);
-		BoundingBox box = new BoundingBox(center, new Point(2, 3.5f), new Point(2, -3.5f), new Point(-2, -3.5f),
-				new Point(-2, 3.5f));
+		BoundingBox box = null;
+		if (type == MobType.DOG) {
+			box = new BoundingBox(center, new Point(2, 3.5f), new Point(2, -3.5f), new Point(-2, -3.5f),
+					new Point(-2, 3.5f));
+		}
+		if (type == MobType.VLADINATORS) {
+			box = new BoundingBox(center, new Point(7, 5.5f), new Point(7, -5.5f), new Point(-7, -5.5f),
+					new Point(-7, 5.5f));
+		}
 		box.addAngle((int) r);
 		return box;
 	}

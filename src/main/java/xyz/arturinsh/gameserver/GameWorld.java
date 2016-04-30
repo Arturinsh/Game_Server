@@ -307,7 +307,7 @@ public class GameWorld {
 			public void run() {
 				executeMobAttack(mob);
 			}
-		}, 1000);
+		}, mob.attackTime);
 	}
 
 	private void executeMobAttack(Mob mob) {

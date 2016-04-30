@@ -105,6 +105,7 @@ public class PlayerConnection extends Connection {
 	public void reset(){
 		character.x = 200;
 		character.z = 200;
+		character.y = 0;
 		character.hp = DEFAULT_HP;
 		dead = false;
 	}

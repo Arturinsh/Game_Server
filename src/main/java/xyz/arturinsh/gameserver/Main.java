@@ -21,6 +21,7 @@ import xyz.arturinsh.packets.Packets.EnterWorld;
 import xyz.arturinsh.packets.Packets.LogIn;
 import xyz.arturinsh.packets.Packets.LogInFailed;
 import xyz.arturinsh.packets.Packets.LogInSuccess;
+import xyz.arturinsh.packets.Packets.LogOut;
 import xyz.arturinsh.packets.Packets.MobAttack;
 import xyz.arturinsh.packets.Packets.MobUpdate;
 import xyz.arturinsh.packets.Packets.PlayerPositionUpdate;
@@ -30,6 +31,7 @@ import xyz.arturinsh.packets.Packets.RegisterSuccess;
 import xyz.arturinsh.packets.Packets.RemovePlayer;
 import xyz.arturinsh.packets.Packets.ServerMessage;
 import xyz.arturinsh.packets.Packets.SnapShot;
+import xyz.arturinsh.packets.Packets.SwitchCharacter;
 import xyz.arturinsh.packets.Packets.UserCharacter;
 
 public class Main {
@@ -81,6 +83,8 @@ public class Main {
 		kryo.register(AttackStarted.class);
 		kryo.register(MobAttack.class);
 		kryo.register(ServerMessage.class);
+		kryo.register(LogOut.class);
+		kryo.register(SwitchCharacter.class);
 	}
 
 	private static void setLoggersToLogWarning() {

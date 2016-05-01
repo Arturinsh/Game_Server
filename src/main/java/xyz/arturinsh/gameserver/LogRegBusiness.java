@@ -23,11 +23,9 @@ import xyz.arturinsh.packets.Packets.UserCharacter;
 
 public class LogRegBusiness {
 	private Server server;
-	private List<User> loggedIn;
 
-	public LogRegBusiness(Server _server, List<User> _loggedIn) {
+	public LogRegBusiness(Server _server) {
 		server = _server;
-		loggedIn = _loggedIn;
 	}
 
 	public void logIn(PlayerConnection playerConnection, LogIn login) {
@@ -110,7 +108,7 @@ public class LogRegBusiness {
 	}
 
 	// TODO dublicate of method
-	private List<UserCharacter> convertChars(User user) {
+	public List<UserCharacter> convertChars(User user) {
 		List<UserCharacter> characters = new ArrayList<UserCharacter>();
 
 		for (GameCharacter usrChar : user.getCharacters()) {

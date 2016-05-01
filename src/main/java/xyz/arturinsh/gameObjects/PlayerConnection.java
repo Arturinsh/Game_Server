@@ -30,6 +30,27 @@ public class PlayerConnection extends Connection {
 	private boolean attacking = false, dead = false;
 	private Calendar nextSpawnTime;
 
+	public void logOut() {
+		user = null;
+		character = null;
+		lastTimeStamp = null;
+		tick = 0;
+		attackTimes = new ArrayList<Date>();
+		attacking = false;
+		dead = false;
+		nextSpawnTime = null;
+	}
+
+	public void siwtchCharacter() {
+		character = null;
+		lastTimeStamp = null;
+		tick = 0;
+		attackTimes = new ArrayList<Date>();
+		attacking = false;
+		dead = false;
+		nextSpawnTime = null;
+	}
+
 	public BoundingBox getBoundingBox() {
 		Point center = new Point(character.x, character.z);
 		BoundingBox box = new BoundingBox(center, new Point(2, 1), new Point(2, -1), new Point(-2, -1),

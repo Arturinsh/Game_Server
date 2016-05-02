@@ -19,16 +19,20 @@ public class PlayerConnection extends Connection {
 
 	private final float ATTACK_CENTER_DISTANCE = 3;
 	private final int DEFAULT_HP = 100;
+	private final int hpUpdate = 5;
 
 	public User user;
 	public UserCharacter character;
 	public Date lastTimeStamp;
 	public long tick;
 	public int attack = 20;
+	private int lastHP = DEFAULT_HP;
 	private ExecutorService tasks = Executors.newSingleThreadExecutor();
 	private List<Date> attackTimes = new ArrayList<Date>();
-	private boolean attacking = false, dead = false;
+	private boolean attacking = false, dead = false, inBattle = false;
 	private Calendar nextSpawnTime;
+	private Calendar nextHPUpgrade;
+	private Calendar inBattleTime;
 
 	public void logOut() {
 		user = null;
@@ -39,6 +43,7 @@ public class PlayerConnection extends Connection {
 		attacking = false;
 		dead = false;
 		nextSpawnTime = null;
+		inBattle = false;
 	}
 
 	public void siwtchCharacter() {
@@ -49,6 +54,7 @@ public class PlayerConnection extends Connection {
 		attacking = false;
 		dead = false;
 		nextSpawnTime = null;
+		inBattle = false;
 	}
 
 	public BoundingBox getBoundingBox() {
@@ -104,6 +110,7 @@ public class PlayerConnection extends Connection {
 		ServerMessage message = new ServerMessage();
 		message.message = "You will be revived in few seconds!";
 		this.sendTCP(message);
+		inBattle = false;
 	}
 
 	public void attackEnded() {
@@ -121,6 +128,35 @@ public class PlayerConnection extends Connection {
 		if (dead && Calendar.getInstance().getTimeInMillis() > nextSpawnTime.getTimeInMillis()) {
 			reset();
 		}
+		if (lastHP > character.hp && !dead) {
+			inBattleTime = Calendar.getInstance();
+			inBattleTime.add(Calendar.SECOND, 5);
+			lastHP = character.hp;
+			inBattle = true;
+		}
+		
+		if (inBattle && Calendar.getInstance().getTimeInMillis() > inBattleTime.getTimeInMillis()) {
+			inBattle = false;
+		}
+
+		if (character.hp < DEFAULT_HP && !dead && !inBattle) {
+			if (nextHPUpgrade == null) {
+				nextHPUpgrade = Calendar.getInstance();
+				nextHPUpgrade.add(Calendar.SECOND, 5);
+			} else if (Calendar.getInstance().getTimeInMillis() > nextHPUpgrade.getTimeInMillis()) {
+				if (character.hp + hpUpdate > DEFAULT_HP) {
+					character.hp = DEFAULT_HP;
+					lastHP = character.hp;
+					nextHPUpgrade = null;
+				} else {
+					character.hp += hpUpdate;
+					lastHP = character.hp;
+					nextHPUpgrade = Calendar.getInstance();
+					nextHPUpgrade.add(Calendar.SECOND, 5);
+				}
+			}
+		}
+
 	}
 
 	public void reset() {
@@ -128,6 +164,7 @@ public class PlayerConnection extends Connection {
 		character.z = 200;
 		character.y = 0;
 		character.hp = DEFAULT_HP;
+		lastHP = DEFAULT_HP;
 		dead = false;
 	}
 }

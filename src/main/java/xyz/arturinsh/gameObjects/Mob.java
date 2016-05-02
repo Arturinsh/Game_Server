@@ -28,8 +28,10 @@ public class Mob {
 	public int attackTime = 1000;
 	public int exp = 10;
 	private int respawnTime = 5;
+	private int hpUpdate = 10;
 
 	private Calendar nextSpawnTime;
+	private Calendar nextHPupgrade;
 
 	private boolean move = false, attacking = false, dead = false;
 
@@ -62,6 +64,7 @@ public class Mob {
 			closeRadius = 15;
 			exp = 100;
 			respawnTime = 10;
+			hpUpdate = 50;
 			break;
 		case DOG:
 			defaultHP = 100;
@@ -73,6 +76,7 @@ public class Mob {
 			closeRadius = 5;
 			exp = 10;
 			respawnTime = 5;
+			hpUpdate = 10;
 			break;
 		}
 	}
@@ -185,6 +189,21 @@ public class Mob {
 			if (!move && agressive) {
 				attacking = true;
 				world.mobAttack(this);
+			}
+			if (hp < defaultHP && !agressive) {
+				if (nextHPupgrade == null) {
+					nextHPupgrade = Calendar.getInstance();
+					nextHPupgrade.add(Calendar.SECOND, 1);
+				} else if (Calendar.getInstance().getTimeInMillis() > nextHPupgrade.getTimeInMillis()) {
+					if (hp + hpUpdate > defaultHP) {
+						hp = defaultHP;
+						nextHPupgrade = null;
+					} else {
+						hp += hpUpdate;
+						nextHPupgrade = Calendar.getInstance();
+						nextHPupgrade.add(Calendar.SECOND, 1);
+					}
+				}
 			}
 		}
 	}

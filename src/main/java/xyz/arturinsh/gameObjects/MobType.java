@@ -1,7 +1,7 @@
 package xyz.arturinsh.gameObjects;
 
 public enum MobType {
-	VLADINATORS, DOG;
+	VLADINATORS, DOG, CROCO;
 
 	public static MobType getInt(int x) {
 		switch (x) {
@@ -9,6 +9,8 @@ public enum MobType {
 			return MobType.VLADINATORS;
 		case 1: 
 			return MobType.DOG;
+		case 2: 
+			return MobType.CROCO;
 		default:
 			return null;
 		}

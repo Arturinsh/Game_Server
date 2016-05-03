@@ -78,6 +78,18 @@ public class Mob {
 			respawnTime = 5;
 			hpUpdate = 10;
 			break;
+		case CROCO:
+			defaultHP = 200;
+			hp = defaultHP;
+			attack = 20;
+			attackTime = 2100;
+			attack_center_radius = 7f;
+			defenseRadius = 30;
+			closeRadius = 7;
+			exp = 20;
+			respawnTime = 10;
+			hpUpdate = 20;
+			break;
 		}
 	}
 
@@ -280,6 +292,10 @@ public class Mob {
 			box = new BoundingBox(center, new Point(3, 5), new Point(3, -5), new Point(-3, -5), new Point(-3, 5));
 			box.addAngle((int) r);
 		}
+		if(type == MobType.CROCO){
+			box = new BoundingBox(center, new Point(2, 4), new Point(2, -4), new Point(-2, -4), new Point(-2, 4));
+			box.addAngle((int) r);
+		}
 		return box;
 	}
 
@@ -300,6 +316,10 @@ public class Mob {
 		if (type == MobType.VLADINATORS) {
 			box = new BoundingBox(center, new Point(7, 5.5f), new Point(7, -5.5f), new Point(-7, -5.5f),
 					new Point(-7, 5.5f));
+		}
+		if (type == MobType.CROCO) {
+			box = new BoundingBox(center, new Point(3, 3f), new Point(3, -3f), new Point(-3, -3f),
+					new Point(-3, 3f));
 		}
 		box.addAngle((int) r);
 		return box;

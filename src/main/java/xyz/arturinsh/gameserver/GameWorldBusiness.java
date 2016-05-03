@@ -39,7 +39,6 @@ public class GameWorldBusiness {
 			EnterWorld success = new EnterWorld();
 			success.character = player.character;
 			player.sendTCP(success);
-			System.out.println("hp:"+player.character.hp +" exp:"+player.character.experience);
 
 			AddPlayer ply = new AddPlayer();
 			ply.character = enter.character;

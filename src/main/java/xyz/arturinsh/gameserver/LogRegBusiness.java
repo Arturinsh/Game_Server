@@ -54,9 +54,7 @@ public class LogRegBusiness {
 				for (Connection con : conList) {
 					PlayerConnection test = (PlayerConnection) con;
 					if (test.user != null) {
-						System.out.println(test.user.getUsername());
 						if (test.user.getUsername().matches(login.userName)) {
-							System.out.println("Matches");
 							con.close();
 						}
 					}

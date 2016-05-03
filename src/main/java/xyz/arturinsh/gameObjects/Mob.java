@@ -33,7 +33,7 @@ public class Mob {
 	private Calendar nextSpawnTime;
 	private Calendar nextHPupgrade;
 
-	private boolean move = false, attacking = false, dead = false;
+	private boolean move = false, attacking = false, dead = false, passiveMob = false;
 
 	public MobType type;
 
@@ -65,6 +65,7 @@ public class Mob {
 			exp = 100;
 			respawnTime = 10;
 			hpUpdate = 50;
+			passiveMob = true;
 			break;
 		case DOG:
 			defaultHP = 100;
@@ -77,6 +78,7 @@ public class Mob {
 			exp = 10;
 			respawnTime = 5;
 			hpUpdate = 10;
+			passiveMob = false;
 			break;
 		case CROCO:
 			defaultHP = 200;
@@ -84,11 +86,12 @@ public class Mob {
 			attack = 20;
 			attackTime = 2100;
 			attack_center_radius = 7f;
-			defenseRadius = 30;
+			defenseRadius = 50;
 			closeRadius = 7;
 			exp = 20;
 			respawnTime = 10;
 			hpUpdate = 20;
+			passiveMob = true;
 			break;
 		}
 	}
@@ -164,23 +167,38 @@ public class Mob {
 			}
 			boolean agressive = false;
 			if (ranges.size() > 0) {
-				agressive = true;
-				if (destinationPlayerName == null) {
-					UserCharacter moveChar = minRangeUserCharacter(ranges);
-					destinationPlayerName = moveChar.charName;
-					move(moveChar.x, moveChar.y, moveChar.z, agressive);
-				} else {
-					UserCharacter moveChar = getCharacterInRanges(ranges, destinationPlayerName);
-					if (moveChar != null) {
-						move(moveChar.x, moveChar.y, moveChar.z, agressive);
-					} else {
-						moveChar = minRangeUserCharacter(ranges);
+				if (!passiveMob) {
+					agressive = true;
+					if (destinationPlayerName == null) {
+						UserCharacter moveChar = minRangeUserCharacter(ranges);
 						destinationPlayerName = moveChar.charName;
 						move(moveChar.x, moveChar.y, moveChar.z, agressive);
+					} else {
+						UserCharacter moveChar = getCharacterInRanges(ranges, destinationPlayerName);
+						if (moveChar != null) {
+							move(moveChar.x, moveChar.y, moveChar.z, agressive);
+						} else {
+							moveChar = minRangeUserCharacter(ranges);
+							destinationPlayerName = moveChar.charName;
+							move(moveChar.x, moveChar.y, moveChar.z, agressive);
+						}
+					}
+				} else {
+					if (destinationPlayerName != null) {
+						agressive = true;
+						UserCharacter moveChar = getCharacterInRanges(ranges, destinationPlayerName);
+						if (moveChar != null) {
+							move(moveChar.x, moveChar.y, moveChar.z, agressive);
+						} else {
+							moveChar = minRangeUserCharacter(ranges);
+							destinationPlayerName = moveChar.charName;
+							move(moveChar.x, moveChar.y, moveChar.z, agressive);
+						}
 					}
 				}
 			} else if (spawnX != this.x && spawnY != this.z && spawnZ != this.z) {
 				move(spawnX, spawnY, spawnZ, agressive);
+				destinationPlayerName = null;
 			}
 
 			if (move && !attacking) {
@@ -292,7 +310,7 @@ public class Mob {
 			box = new BoundingBox(center, new Point(3, 5), new Point(3, -5), new Point(-3, -5), new Point(-3, 5));
 			box.addAngle((int) r);
 		}
-		if(type == MobType.CROCO){
+		if (type == MobType.CROCO) {
 			box = new BoundingBox(center, new Point(2, 4), new Point(2, -4), new Point(-2, -4), new Point(-2, 4));
 			box.addAngle((int) r);
 		}
@@ -318,8 +336,7 @@ public class Mob {
 					new Point(-7, 5.5f));
 		}
 		if (type == MobType.CROCO) {
-			box = new BoundingBox(center, new Point(3, 3f), new Point(3, -3f), new Point(-3, -3f),
-					new Point(-3, 3f));
+			box = new BoundingBox(center, new Point(3, 3f), new Point(3, -3f), new Point(-3, -3f), new Point(-3, 3f));
 		}
 		box.addAngle((int) r);
 		return box;
@@ -346,6 +363,17 @@ public class Mob {
 		public PlayerRange(float _distance, UserCharacter _charater) {
 			distanceToMob = _distance;
 			charater = _charater;
+		}
+	}
+
+	public void receiveAttack(PlayerConnection player) {
+		hp -= player.attack;
+		if (passiveMob) {
+			destinationPlayerName = player.character.charName;
+		}
+		if (hp <= 0 && isAlive()) {
+			kill();
+			player.character.experience += exp;
 		}
 	}
 }

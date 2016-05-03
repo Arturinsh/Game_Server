@@ -290,11 +290,7 @@ public class GameWorld {
 		for (Mob mob : mobs) {
 			if (mob.isAlive())
 				if (checkBounding(playerConnection.getAttackBox(), mob.getBoundingBox())) {
-					mob.hp -= playerConnection.attack;
-					if (mob.hp <= 0 && mob.isAlive()) {
-						mob.kill();
-						playerConnection.character.experience += mob.exp;
-					}
+					mob.receiveAttack(playerConnection);
 //					System.out.println("mob " + mob.Id + " attacked by " + playerConnection.character.charName);
 				}
 		}

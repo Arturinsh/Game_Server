@@ -20,6 +20,7 @@ public class PlayerConnection extends Connection {
 	private final float ATTACK_CENTER_DISTANCE = 3;
 	private final int DEFAULT_HP = 100;
 	private final int hpUpdate = 5;
+	private int level = 0;
 
 	public User user;
 	public UserCharacter character;
@@ -122,8 +123,10 @@ public class PlayerConnection extends Connection {
 	}
 
 	public void update() {
-		if (character.hp <= 0 && !dead)
-			kill();
+		int calculatedLevel = calculateLevel();
+		if (calculatedLevel != level) {
+			updateLevel(calculatedLevel);
+		}
 
 		if (dead && Calendar.getInstance().getTimeInMillis() > nextSpawnTime.getTimeInMillis()) {
 			reset();
@@ -134,18 +137,18 @@ public class PlayerConnection extends Connection {
 			lastHP = character.hp;
 			inBattle = true;
 		}
-		
+
 		if (inBattle && Calendar.getInstance().getTimeInMillis() > inBattleTime.getTimeInMillis()) {
 			inBattle = false;
 		}
 
-		if (character.hp < DEFAULT_HP && !dead && !inBattle) {
+		if (character.hp < calculateDefaultHP() && !dead && !inBattle) {
 			if (nextHPUpgrade == null) {
 				nextHPUpgrade = Calendar.getInstance();
 				nextHPUpgrade.add(Calendar.SECOND, 5);
 			} else if (Calendar.getInstance().getTimeInMillis() > nextHPUpgrade.getTimeInMillis()) {
-				if (character.hp + hpUpdate > DEFAULT_HP) {
-					character.hp = DEFAULT_HP;
+				if (character.hp + hpUpdate > calculateDefaultHP()) {
+					character.hp = calculateDefaultHP();
 					lastHP = character.hp;
 					nextHPUpgrade = null;
 				} else {
@@ -159,12 +162,46 @@ public class PlayerConnection extends Connection {
 
 	}
 
+	private void updateLevel(int calculatedLevel) {
+		level = calculatedLevel;
+	}
+
+	private int calculateLevel() {
+		int level = 1, tempExp = character.experience;
+		while ((tempExp - level * 100) > 0) {
+			tempExp -= level * 100;
+			level++;
+		}
+		return level;
+	}
+
+	private int calculateDefaultHP() {
+		return DEFAULT_HP + level * 10;
+	}
+
+	public void receiveAttack(Mob mob, PlayerConnection player) {
+		if (character.hp > 0) {
+			if (mob != null) {
+				character.hp -= mob.attack;
+			}
+			if (player != null) {
+				character.hp -= player.getAttack();
+			}
+			if (character.hp <= 0 && !dead)
+				kill();
+		}
+	}
+
+	public int getAttack() {
+		return attack + level * 5;
+	}
+
 	public void reset() {
 		character.x = 200;
 		character.z = 200;
 		character.y = 0;
-		character.hp = DEFAULT_HP;
-		lastHP = DEFAULT_HP;
+		character.hp = calculateDefaultHP();
+		lastHP = calculateDefaultHP();
 		dead = false;
 	}
 }

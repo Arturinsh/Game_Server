@@ -375,7 +375,7 @@ public class Mob {
 	}
 
 	public void receiveAttack(PlayerConnection player) {
-		hp -= player.attack;
+		hp -= player.getAttack();
 		if (passiveMob) {
 			destinationPlayerName = player.character.charName;
 		}

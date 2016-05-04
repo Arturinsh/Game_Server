@@ -119,9 +119,6 @@ public class GameWorld {
 				MinMax result_P2 = getMinMax(vecs_box2, normals_box2.get(i));
 
 				isSeperated = result_P1.maxProj < result_P2.minProj || result_P2.maxProj < result_P1.minProj;
-				// System.out.println(result_P1.maxProj+
-				// "<"+result_P2.minProj
-				// +"||"+result_P2.maxProj+"<"+result_P1.minProj);
 				if (isSeperated)
 					break;
 			}
@@ -217,12 +214,6 @@ public class GameWorld {
 			PlayerConnection player = (PlayerConnection) server.getConnections()[0];
 			if (player.character != null) {
 				float len = length(player.character.x, player.character.y, player.character.z, 0f, 0f, 0f);
-				// System.out.println(len+" "+player.x+" "+player.z);
-				// if (len < 20) {
-				// dog.move(player.character.x, player.character.y,
-				// player.character.z);
-				// } else
-				// dog.move(0, 0, 0);
 			}
 		}
 	}
@@ -280,9 +271,7 @@ public class GameWorld {
 				if (!player.character.charName.matches(playerConnection.character.charName)) {
 					if (player.character.hp > 0)
 						if (checkBounding(playerConnection.getAttackBox(), player.getBoundingBox())) {
-							player.character.hp -= playerConnection.attack;
-//							System.out.println(
-//									player.character.charName + " attacked by " + playerConnection.character.charName);
+							player.receiveAttack(null, playerConnection);
 						}
 				}
 			}
@@ -291,7 +280,6 @@ public class GameWorld {
 			if (mob.isAlive())
 				if (checkBounding(playerConnection.getAttackBox(), mob.getBoundingBox())) {
 					mob.receiveAttack(playerConnection);
-//					System.out.println("mob " + mob.Id + " attacked by " + playerConnection.character.charName);
 				}
 		}
 		playerConnection.attackEnded();
@@ -315,10 +303,7 @@ public class GameWorld {
 		if (playersInWorld.size() > 0) {
 			for (PlayerConnection player : playersInWorld) {
 				if (checkBounding(mob.getAttackBox(), player.getBoundingBox())) {
-					if (player.character.hp > 0) {
-						player.character.hp -= mob.attack;
-						System.out.println(player.character.charName + " attacked by mob " + mob.Id);
-					}
+					player.receiveAttack(mob, null);
 				}
 			}
 		}

@@ -205,7 +205,9 @@ public class Mob {
 				float tempX = this.x + (float) Math.sin(Math.toRadians(r)) * moveSpeed;
 				float tempZ = this.z + (float) Math.cos(Math.toRadians(r)) * moveSpeed;
 
-				if (pointOnLine(tempX, y, tempZ)) {
+				if (pointOnLine(tempX, y, tempZ) || length(x, y, z, destX, destY, destZ) < 1) {
+					// if (length(tempX, y, tempZ, destX, destY, destZ) <
+					// closeRadius) {
 					this.x = destX;
 					this.y = destY;
 					this.z = destZ;
@@ -216,11 +218,15 @@ public class Mob {
 				}
 
 			}
-			if (!move && agressive) {
+			if (!move && agressive)
+
+			{
 				attacking = true;
 				world.mobAttack(this);
 			}
-			if (hp < defaultHP && !agressive) {
+			if (hp < defaultHP && !agressive)
+
+			{
 				if (nextHPupgrade == null) {
 					nextHPupgrade = Calendar.getInstance();
 					nextHPupgrade.add(Calendar.SECOND, 1);
@@ -235,7 +241,9 @@ public class Mob {
 					}
 				}
 			}
+
 		}
+
 	}
 
 	private UserCharacter getCharacterInRanges(List<PlayerRange> list, String charName) {

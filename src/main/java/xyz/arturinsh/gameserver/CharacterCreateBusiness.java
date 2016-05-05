@@ -38,7 +38,7 @@ public class CharacterCreateBusiness {
 			ch.setCharClass(charClass);
 			User user = playerConnection.user;
 			ch.setUser(user);
-			ch.setPosRot(200, 200, 200, 0);
+			ch.setPosRot(200, 0, 200, 0);
 			ch.setHP(100);
 			
 			session.beginTransaction();

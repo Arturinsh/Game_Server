@@ -36,7 +36,10 @@ import xyz.arturinsh.packets.Packets.UserCharacter;
 
 public class Main {
 	private static Server server;
-
+	
+	final static int PORT1 = 2300;
+	final static int PORT2 = 54777;
+	
 	public static void main(String args[]) {
 		System.out.println("Server started");
 		setLoggersToLogWarning();
@@ -50,7 +53,7 @@ public class Main {
 		server.addListener(new NetworkListener(server, world));
 		server.start();
 		try {
-			server.bind(2300, 54777);
+			server.bind(PORT1, PORT2);
 		} catch (IOException e) {
 			System.out.print(e);
 		}

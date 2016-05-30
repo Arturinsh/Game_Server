@@ -107,30 +107,14 @@ public class Mob {
 		startY = 0;
 		startZ = z;
 
-		if (!attacking)
+		if (!attacking) {
 			calculateRotation(nx, nz);
-		// System.out.println("Dx=" + nx + "Dz=" + nz + "R=" + r);
-		float ln = length(x, y, z, nx, ny, nz);
-		// System.out.println(ln);
-		if (toAttack) {
-			if (ln > closeRadius) {
-				float reverseRot = this.r + 180;
-				float rotToRadians = (float) Math.toRadians(reverseRot);
-				float xOffset = (float) (closeRadius * Math.sin(rotToRadians));
-				float zOffset = (float) (closeRadius * Math.cos(rotToRadians));
-				float px = nx + xOffset;
-				float pz = nz + zOffset;
-
-				destX = px;
-				destY = 0;
-				destZ = pz;
-			}
-			// System.out.println("Px=" + px + "Pz=" + pz + "R=" + reverseRot);
-		} else {
-			destX = nx;
-			destY = 0;
-			destZ = nz;
 		}
+
+		destX = nx;
+		destY = 0;
+		destZ = nz;
+
 		move = true;
 	}
 
@@ -205,9 +189,13 @@ public class Mob {
 				float tempX = this.x + (float) Math.sin(Math.toRadians(r)) * moveSpeed;
 				float tempZ = this.z + (float) Math.cos(Math.toRadians(r)) * moveSpeed;
 
-				if (pointOnLine(tempX, y, tempZ) || length(x, y, z, destX, destY, destZ) < 1) {
-					// if (length(tempX, y, tempZ, destX, destY, destZ) <
-					// closeRadius) {
+				if (agressive && (pointOnLine(tempX, y, tempZ)
+						|| length(tempX, y, tempZ, destX, destY, destZ) < closeRadius)) {
+					this.x = destX;
+					this.y = destY;
+					this.z = destZ;
+					move = false;
+				} else if (pointOnLine(tempX, y, tempZ)) {
 					this.x = destX;
 					this.y = destY;
 					this.z = destZ;
@@ -218,9 +206,7 @@ public class Mob {
 				}
 
 			}
-			if (!move && agressive)
-
-			{
+			if (!move && agressive) {
 				attacking = true;
 				world.mobAttack(this);
 			}
